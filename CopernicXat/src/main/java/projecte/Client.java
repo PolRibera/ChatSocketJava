@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Scanner;
 
 
 /**
@@ -31,7 +32,7 @@ public class Client { //És el client, ha d'estar posat en marxa el servidor
     OutputStream out;
 
     String nomfich;
-
+    public static Scanner sc = new Scanner(System.in);
     public static void main(String[] args) { // prova l'enviament de fitxers
 
         int PORT = 54322;
@@ -40,8 +41,9 @@ public class Client { //És el client, ha d'estar posat en marxa el servidor
         try {
             Socket skCliente = new Socket(HOST, PORT);
             System.out.println("Connectem amb el servidor");
-
-            Client ef = new Client(skCliente, "C:\\Users\\polri\\Pictures\\Screenshot_4.png"); //posar el fitxer a enviar, podem posar-lo amb la ruta al fitxer  
+            System.out.println("Indica la ruta");
+            String ruta = sc.nextLine();
+            Client ef = new Client(skCliente,ruta); //posar el fitxer a enviar, podem posar-lo amb la ruta al fitxer  
             System.out.println("fitxer enviat:  " + ef.nomfich);
 
             skCliente.close();
