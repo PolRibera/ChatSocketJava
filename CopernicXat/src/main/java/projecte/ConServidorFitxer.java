@@ -29,7 +29,7 @@ import static projecte.ConecInicialServidorString.n;
  *
  * @author ivan
  */
-public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
+public class ConServidorFitxer { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
 
     static final int METODE_REBRE = 1; //1: tot de cop; 2: en blocs
     
@@ -53,7 +53,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             Socket sk = skServidor.accept();
             System.out.println("connectant amb el client " + sk.getInetAddress().getHostAddress() );
 
-            Servidor rf = new Servidor(sk);
+            ConServidorFitxer rf = new ConServidorFitxer(sk);
 
 
         } catch (IOException e) {
@@ -94,7 +94,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         }
     }
 
-    public Servidor(Socket sk) {
+    public ConServidorFitxer(Socket sk) {
         this.sk = sk;
         
         switch( METODE_REBRE ){
