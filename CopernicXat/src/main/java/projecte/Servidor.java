@@ -4,7 +4,7 @@
  */
 
 package projecte;
-import java.util.Scanner;
+
 
 /**
  *
@@ -48,7 +48,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             Socket sk = skServidor.accept();
             System.out.println("connectant amb el client " + sk.getInetAddress().getHostAddress() );
 
-            RebFitxerServidor rf = new RebFitxerServidor(sk);
+            Servidor rf = new Servidor(sk);
 
             sk.close();
             skServidor.close();

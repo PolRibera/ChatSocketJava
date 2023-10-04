@@ -4,13 +4,6 @@
  */
 
 package projecte;
-import java.util.Scanner;
-
-/**
- *
- * @author polri
- */
-
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -20,10 +13,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
+
 /**
  *
- * @author Iván Cantón
+ * @author polri
  */
+
+
 public class Client { //És el client, ha d'estar posat en marxa el servidor
 
     static final int METODE_ENVIO = 1; //1: Se envia tot en un array de bytes; 2: Se envía en blocs d'arrays de bytes
@@ -45,7 +41,7 @@ public class Client { //És el client, ha d'estar posat en marxa el servidor
             Socket skCliente = new Socket(HOST, PORT);
             System.out.println("Connectem amb el servidor");
 
-            Client ef = new Client(skCliente, "C:\\Users\\polri\\Pictures\\Screenshot_3.png"); //posar el fitxer a enviar, podem posar-lo amb la ruta al fitxer  
+            Client ef = new Client(skCliente, "C:\\Users\\polri\\Pictures\\Screenshot_4.png"); //posar el fitxer a enviar, podem posar-lo amb la ruta al fitxer  
             System.out.println("fitxer enviat:  " + ef.nomfich);
 
             skCliente.close();
