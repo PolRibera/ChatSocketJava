@@ -13,12 +13,17 @@ package projecte;
 
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static projecte.ConecInicialServidorString.n;
 
 /**
  *
@@ -41,7 +46,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         int PUERTO = 54322;
 
         ServerSocket skServidor;
-
+        while( true ){
         try {
             skServidor = new ServerSocket(PUERTO);
             System.out.println("Escoltant el port " + PUERTO);
@@ -50,11 +55,42 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
 
             Servidor rf = new Servidor(sk);
 
-            sk.close();
-            skServidor.close();
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+       }
+    }
+     public static class Server extends Thread{
+        Socket sk;
+        
+        Server( Socket sk ){
+            this.sk = sk;
+        }
+        
+        @Override
+        public void run(){
+            
+            InputStream is;
+            OutputStream os;
+            
+            try {
+                is = sk.getInputStream();
+                os = sk.getOutputStream();
+
+                DataOutputStream dos = new DataOutputStream(sk.getOutputStream());
+                DataInputStream dis = new DataInputStream(sk.getInputStream());
+        
+                String s = dis.readUTF();
+                System.out.println("llegit " + sk.getInetAddress() + ":" + sk.getPort() + " -> " + s );
+               
+                dos.writeUTF(  "Eres la conexión número " + n );
+                
+                sk.close(); //tanquem la connexió
+                
+            } catch (IOException ex) {
+                Logger.getLogger(ConecInicialServidorString.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

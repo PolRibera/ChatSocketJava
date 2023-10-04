@@ -21,7 +21,7 @@ import java.util.Scanner;
  */
 
 
-public class Client { //És el client, ha d'estar posat en marxa el servidor
+public class ConClientFitxer { //És el client, ha d'estar posat en marxa el servidor
 
     static final int METODE_ENVIO = 1; //1: Se envia tot en un array de bytes; 2: Se envía en blocs d'arrays de bytes
     
@@ -43,7 +43,7 @@ public class Client { //És el client, ha d'estar posat en marxa el servidor
             System.out.println("Connectem amb el servidor");
             System.out.println("Indica la ruta");
             String ruta = sc.nextLine();
-            Client ef = new Client(skCliente,ruta); //posar el fitxer a enviar, podem posar-lo amb la ruta al fitxer  
+            ConClientFitxer ef = new ConClientFitxer(skCliente,ruta); //posar el fitxer a enviar, podem posar-lo amb la ruta al fitxer  
             System.out.println("fitxer enviat:  " + ef.nomfich);
 
             skCliente.close();
@@ -53,7 +53,7 @@ public class Client { //És el client, ha d'estar posat en marxa el servidor
         }
     }
 
-   public Client(Socket sk, String nomfich) {
+   public ConClientFitxer(Socket sk, String nomfich) {
         this.sk = sk;
         this.nomfich = nomfich;
         
