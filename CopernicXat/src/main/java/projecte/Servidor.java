@@ -8,7 +8,7 @@ package projecte;
 
 /**
  *
- * @author polri
+ *  @author Ricard Sierra, Pol Ribera, Alex Montoya
  */
 
 import java.io.BufferedOutputStream;

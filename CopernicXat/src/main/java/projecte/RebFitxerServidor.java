@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 /**
  *
- * @author polri
+ * @author Ricard Sierra, Pol Ribera, Alex Montoya
  */
 class RebFitxerServidor {
     public static Scanner sc = new Scanner(System.in);

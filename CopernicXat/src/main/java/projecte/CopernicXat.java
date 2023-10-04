@@ -7,7 +7,7 @@ package projecte;
 
 /**
  *
- * @author polri
+ * @author Ricard Sierra, Pol Ribera, Alex Montoya
  */
 public class CopernicXat {
 

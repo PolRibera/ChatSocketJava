@@ -16,7 +16,7 @@ import java.net.Socket;
 
 /**
  *
- * @author onniknkn
+ * @author Ricard Sierra, Pol Ribera, Alex Montoya
  */
 
 

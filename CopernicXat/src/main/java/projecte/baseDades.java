@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author polri
+ * @author Ricard Sierra, Pol Ribera, Alex Montoya
  */
 public class baseDades {
 
