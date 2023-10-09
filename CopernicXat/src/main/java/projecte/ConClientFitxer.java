@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 
 package projecte;
 import java.io.BufferedInputStream;
@@ -23,7 +19,7 @@ import java.util.Scanner;
 
 public class ConClientFitxer { //És el client, ha d'estar posat en marxa el servidor
 
-    static final int METODE_ENVIO = 1; //1: Se envia tot en un array de bytes; 2: Se envía en blocs d'arrays de bytes
+    static final int METODE_ENVIO = 2; //1: Se envia tot en un array de bytes; 2: Se envía en blocs d'arrays de bytes
     
     Socket sk;
     FileInputStream fileInput;
@@ -32,27 +28,7 @@ public class ConClientFitxer { //És el client, ha d'estar posat en marxa el ser
     OutputStream out;
 
     String nomfich;
-    public static Scanner sc = new Scanner(System.in);
-    public static void main(String[] args) { // prova l'enviament de fitxers
-
-        int PORT = 54322;
-        String HOST = "localhost"; //localhost és el mateix ordinador. Aquí posariem la ip o el nom de xarxa del dispositiu al que volem connectar
-
-        try {
-            Socket skCliente = new Socket(HOST, PORT);
-            System.out.println("Connectem amb el servidor");
-            System.out.println("Indica la ruta");
-            String ruta = sc.nextLine();
-            ConClientFitxer ef = new ConClientFitxer(skCliente,ruta); //posar el fitxer a enviar, podem posar-lo amb la ruta al fitxer  
-            System.out.println("fitxer enviat:  " + ef.nomfich);
-
-            skCliente.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    
    public ConClientFitxer(Socket sk, String nomfich) {
         this.sk = sk;
         this.nomfich = nomfich;
@@ -154,17 +130,14 @@ public class ConClientFitxer { //És el client, ha d'estar posat en marxa el ser
             }
             //oos.flush(); //no cal, es fa un flush al fer el close de oos
             System.out.println("Enviat");
-            oos.close();
-            sk.close();
+            //oos.close();
+            //sk.close();
             System.out.println("Socket tancat");
         } catch (IOException e1) {
             e1.printStackTrace();
         }
     }
 }
-
-
-
 
 
 
