@@ -25,20 +25,24 @@ public class baseDades {
     private static Connection cn;
     private static Scanner sc;
     private static String HOST = "localhost";
-    private static String DATABASE = "fromjava";
+    private static String DATABASE = "projectexat";
     private static String USER = "root";
-    private static String PASSWORD = "1234";
+    private static String PASSWORD = "admin";
 
     public static void main(String[] args) {
         if (esCorrectoDriver()) {
                 cn = obtenerCon();
                 sc = new Scanner(System.in);
-                System.out.println("Matricula Alumne:");
-                String matriula = sc.next();
-                System.out.println("Nom Alumne:");
+                System.out.println("Id usuario:");
+                int idusuario = sc.nextInt();
+                System.out.println("Nom usuario:");
                 sc.nextLine();
                 String nom = sc.nextLine();
-                alumneInsert(matriula, nom);
+                System.out.println("Cognoms usuario:");
+                String cognoms = sc.nextLine();
+                System.out.println("Contraseña usuario:");
+                String contraseña = sc.nextLine();
+                usuarioInsert(idusuario, nom, cognoms, contraseña);
 
         }
     }
@@ -65,20 +69,24 @@ public class baseDades {
         }
     }
 
-    private static void alumneInsert(String matricula, String name) {
+    private static void usuarioInsert(int idusuario, String name, String cognoms, String contraseña) {
         try {
-            PreparedStatement st = cn.prepareStatement("INSERT INTO alumne(matriula, nom) VALUES (?, ?);");
-            st.setString(1, matricula);
+            PreparedStatement st = cn.prepareStatement("INSERT INTO usuario(idusuario, nom, cognoms, contraseña) VALUES (?, ?, ?, ?);");
+            st.setInt(1, idusuario);
             st.setString(2, name);
+            st.setString(3, cognoms);
+            st.setString(4, contraseña);
             st.executeUpdate();
 
-            PreparedStatement st2 = cn.prepareStatement("SELECT matriula,nom FROM alumne;");
+            PreparedStatement st2 = cn.prepareStatement("SELECT idusuario, nom, cognoms, contraseña FROM usuario;");
             ResultSet rs = st2.executeQuery();
             while (rs.next()) {
-                System.out.println( rs.getString("matriula") + " = " + rs.getString("nom"));
+                System.out.println( rs.getString("idusuario") + " = " + rs.getString("nom"));
             }
         } catch (SQLException e) {
             System.out.println( e.getMessage());
         }
     }
+    
+    
 }
