@@ -3,7 +3,7 @@
 //-------DAM2T-----------//
 //-----------------------//
 
-import com.sun.java.accessibility.util.GUIInitializedListener;
+
 
 import java.util.Scanner;
 
@@ -58,7 +58,7 @@ public class testGui {
                 "",
                 "Opcions Grup                       ",
                 "",
-                "1.- [Donar d’alta client]          ",
+                "1.- [Donar de alta client]         ",
                 "2.- [Donar de baixa client]        ",
                 "3.- [Administrar grup]             ",
                 "4.- [Menu principal]               ",

@@ -34,23 +34,30 @@ public class Cliente {
         }
         String s1 = sc.next();
         dos.writeUTF(s1);
-        System.out.println("Enviado " + s1 );
-        if (s1.equals("3")) {
-            s1 = sc.next();
-            dos.writeUTF(s1);
-            System.out.println("Enviado " + s1 );
-            if (s1.equals("1")) {
-               System.out.println("Connectem amb el servidor");
-               System.out.println("Indica la ruta");
-               String ruta = sc.next();
-               ConClientFitxer ef = new ConClientFitxer(sk,ruta); //posar el fitxer a enviar, podem posar-lo amb la ruta al fitxer  
-               System.out.println("fitxer enviat:  " + ef.nomfich);
-               sk.close();
-            } else if (s1.equals("0")){
-               String s2 = "Me gustan las mandarinas";
-               dos.writeUTF(s2);
-               System.out.println("Enviado " + s2 );
-            }
+        switch (Integer.parseInt(s1)){
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:               
+                s1 = sc.next();
+                dos.writeUTF(s1);
+                System.out.println("Enviado " + s1 );
+                if (s1.equals("1")) {
+                   System.out.println("Connectem amb el servidor");
+                   System.out.println("Indica la ruta");
+                   String ruta = sc.next();
+                   ConClientFitxer ef = new ConClientFitxer(sk,ruta); //posar el fitxer a enviar, podem posar-lo amb la ruta al fitxer  
+                   System.out.println("fitxer enviat:  " + ef.nomfich);
+                   sk.close();
+                } else if (s1.equals("0")){
+                   String s2 = "Me gustan las mandarinas";
+                   dos.writeUTF(s2);
+                   System.out.println("Enviado " + s2 );
+                }
+                break;
         }
         
 
