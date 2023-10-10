@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 /**
  *
- * @author polri
+ * @author Ricard Sierra, Pol Ribera, Alex Montoya
  */
 public class Cliente {
         public static Scanner sc = new Scanner(System.in);
@@ -36,21 +36,27 @@ public class Cliente {
         dos.writeUTF(s1);
         switch (Integer.parseInt(s1)){
             case 0:
+                System.out.println(dis.readUTF());
+                String idUsuari = sc.next();
+                dos.writeUTF(idUsuarid);
+                System.out.println(dis.readUTF());
+                String contrasenya = sc.next();
+                dos.writeUTF(contrasenya);
                 break;
             case 1:
-                            
-                            System.out.println(dis.readUTF());
-                            String idUsuariC = sc.next();
-                            dos.writeUTF(idUsuariC);
-                            System.out.println(dis.readUTF());
-                            String NomC = sc.next();
-                            dos.writeUTF(NomC);
-                            System.out.println(dis.readUTF());
-                            String CognomC = sc.next();
-                            dos.writeUTF(CognomC);
-                            System.out.println(dis.readUTF());
-                            String contraseñaC = sc.next();
-                            dos.writeUTF(contraseñaC);
+
+                System.out.println(dis.readUTF());
+                String idUsuariC = sc.next();
+                dos.writeUTF(idUsuariC);
+                System.out.println(dis.readUTF());
+                String NomC = sc.next();
+                dos.writeUTF(NomC);
+                System.out.println(dis.readUTF());
+                String CognomC = sc.next();
+                dos.writeUTF(CognomC);
+                System.out.println(dis.readUTF());
+                String contraseñaC = sc.next();
+                dos.writeUTF(contraseñaC);
                 break;
             case 2:
                 String RespuestaServidorLLISTAT;

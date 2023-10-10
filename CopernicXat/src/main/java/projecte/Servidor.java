@@ -83,10 +83,12 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 respostaUsuariRebut = dis.readUTF();
                 switch(Integer.parseInt(respostaUsuariRebut)){
                     case 0:
-                        dos.writeUTF("Introdueix nom d'usuari:");
-                        String Usuari = dis.readUTF();
-                        dos.writeUTF("Introdueix contrasenya:");
-                        String Contrasenya = dis.readUTF();
+                        if (esCorrectoDriver()) {
+                            dos.writeUTF("Introdueix nom d'usuari:");
+                            String idUsuari = dis.readUTF();
+                            dos.writeUTF("Introdueix contrasenya:");
+                            String contrasenya = dis.readUTF()
+                        };
                         break;
                     case 1:
                         if (esCorrectoDriver()) {
@@ -188,7 +190,17 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             return false;
         }
     }
+    private static void iniciSesio(String   idUsuario,String contrasenya){
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM usuario WHERE id_usuario = ? AND contrasena = ?)";
+            st.setString(1, idUsuario);
+            st.setString(2, contrasenya);
+            st.executeUpdate();
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
 
+    }
     private static void usuarioInsert(String idusuario, String name, String cognoms, String contraseña) {
         try {
             PreparedStatement st = cn.prepareStatement("INSERT INTO usuario(idusuario, nom, cognoms, contraseña) VALUES (?, ?, ?, ?);");
