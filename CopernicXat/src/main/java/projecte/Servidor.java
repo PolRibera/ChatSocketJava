@@ -37,7 +37,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
     private static Connection cn;
     private static Scanner sc;
     private static String HOST = "localhost";
-    private static String DATABASE = "copernicxat";
+    private static String DATABASE = "projectexat";
     private static String USER = "root";
     private static String PASSWORD = "1234";
 
@@ -92,7 +92,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                         if (esCorrectoDriver()) {
                             cn = obtenerCon();
                             dos.writeUTF("Introdueix id d'usuari:");
-                            int idUsuariC = Integer.parseInt(dis.readUTF());
+                            String idUsuariC = dis.readUTF();
                             dos.writeUTF("Introdueix nom d'usuari:");
                             String NomC = dis.readUTF();
                             dos.writeUTF("Introdueix cognom d'usuari:");
@@ -189,10 +189,10 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         }
     }
 
-    private static void usuarioInsert(int idusuario, String name, String cognoms, String contraseña) {
+    private static void usuarioInsert(String idusuario, String name, String cognoms, String contraseña) {
         try {
             PreparedStatement st = cn.prepareStatement("INSERT INTO usuario(idusuario, nom, cognoms, contraseña) VALUES (?, ?, ?, ?);");
-            st.setInt(1, idusuario);
+            st.setString(1, idusuario);
             st.setString(2, name);
             st.setString(3, cognoms);
             st.setString(4, contraseña);

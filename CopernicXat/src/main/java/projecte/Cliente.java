@@ -38,6 +38,19 @@ public class Cliente {
             case 0:
                 break;
             case 1:
+                            
+                            System.out.println(dis.readUTF());
+                            String idUsuariC = sc.next();
+                            dos.writeUTF(idUsuariC);
+                            System.out.println(dis.readUTF());
+                            String NomC = sc.next();
+                            dos.writeUTF(NomC);
+                            System.out.println(dis.readUTF());
+                            String CognomC = sc.next();
+                            dos.writeUTF(CognomC);
+                            System.out.println(dis.readUTF());
+                            String contraseñaC = sc.next();
+                            dos.writeUTF(contraseñaC);
                 break;
             case 2:
                 String RespuestaServidorLLISTAT;
