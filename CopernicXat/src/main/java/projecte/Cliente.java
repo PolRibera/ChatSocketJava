@@ -40,8 +40,14 @@ public class Cliente {
             case 1:
                 break;
             case 2:
-                break;
-            case 3:               
+                String RespuestaServidorLLISTAT;
+                String llargadaArrayList = dis.readUTF();
+                for (int i = 0; i < Integer.parseInt(llargadaArrayList); i++) {
+                    RespuestaServidorLLISTAT = dis.readUTF();
+                    System.out.println(RespuestaServidorLLISTAT);
+                }
+            case 3:
+                System.out.println(dis.readUTF());
                 s1 = sc.next();
                 dos.writeUTF(s1);
                 System.out.println("Enviado " + s1 );
@@ -53,7 +59,8 @@ public class Cliente {
                    System.out.println("fitxer enviat:  " + ef.nomfich);
                    sk.close();
                 } else if (s1.equals("0")){
-                   String s2 = "Me gustan las mandarinas";
+                   System.out.println("Indica el missatge que vols enviar");
+                   String s2 = sc.next();
                    dos.writeUTF(s2);
                    System.out.println("Enviado " + s2 );
                 }
