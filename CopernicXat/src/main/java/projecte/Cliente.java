@@ -38,13 +38,12 @@ public class Cliente {
             case 0:
                 System.out.println(dis.readUTF());
                 String idUsuari = sc.next();
-                dos.writeUTF(idUsuarid);
+                dos.writeUTF(idUsuari);
                 System.out.println(dis.readUTF());
                 String contrasenya = sc.next();
                 dos.writeUTF(contrasenya);
                 break;
             case 1:
-
                 System.out.println(dis.readUTF());
                 String idUsuariC = sc.next();
                 dos.writeUTF(idUsuariC);
