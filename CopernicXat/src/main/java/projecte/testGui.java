@@ -4,7 +4,7 @@
 //-----------------------//
 
 
-
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class testGui {
@@ -142,38 +142,42 @@ public class testGui {
 
     }
 
-    public static void gui(String[] contingut,int height){
+    public static ArrayList<String> gui(String[] contingut, int height) {
         int width = 40;
 
         char horizontalChar = '-';
         char verticalChar = '|';
 
-        for (int i = 0; i < width; i++) {
+        ArrayList<String> guiLines = new ArrayList<>();
 
-            System.out.print(horizontalChar);
+        StringBuilder horizontalLine = new StringBuilder();
+        for (int i = 0; i < width; i++) {
+            horizontalLine.append(horizontalChar);
         }
-        System.out.println();
+        guiLines.add(horizontalLine.toString());
 
         for (int i = 0; i < height - 2; i++) {
-            System.out.print(verticalChar);
+            StringBuilder line = new StringBuilder();
+            line.append(verticalChar);
             if (i < contingut.length) {
                 int contentLength = contingut[i].length();
                 int padding = (width - 2 - contentLength) / 2;
                 for (int j = 0; j < padding; j++) {
-                    System.out.print(" ");
+                    line.append(" ");
                 }
-                System.out.print(contingut[i]);
+                line.append(contingut[i]);
                 for (int j = padding + contentLength; j < width - 2; j++) {
-                    System.out.print(" ");
+                    line.append(" ");
                 }
             }
-            System.out.println(verticalChar);
+            line.append(verticalChar);
+            guiLines.add(line.toString());
         }
+        guiLines.add(horizontalLine.toString());
+        ArrayList<String> guiArray = new ArrayList<>();
+        guiArray = guiLines;
 
-        for (int i = 0; i < width; i++) {
-            System.out.print(horizontalChar);
-        }
-        System.out.println();
+        return guiArray;
     }
-}
 
+}
