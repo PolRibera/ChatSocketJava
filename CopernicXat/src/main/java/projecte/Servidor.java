@@ -84,10 +84,12 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 switch(Integer.parseInt(respostaUsuariRebut)){
                     case 0:
                         if (esCorrectoDriver()) {
+                            cn = obtenerCon();
                             dos.writeUTF("Introdueix nom d'usuari:");
                             String idUsuari = dis.readUTF();
                             dos.writeUTF("Introdueix contrasenya:");
-                            String contrasenya = dis.readUTF()
+                            String contrasenya = dis.readUTF();
+                            iniciSesio(idUsuari,contrasenya);
                         };
                         break;
                     case 1:
@@ -192,7 +194,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
     }
     private static void iniciSesio(String   idUsuario,String contrasenya){
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM usuario WHERE id_usuario = ? AND contrasena = ?)";
+            PreparedStatement st = cn.prepareStatement("SELECT * FROM usuario WHERE id_usuario = ? AND contrasena = ?");
             st.setString(1, idUsuario);
             st.setString(2, contrasenya);
             st.executeUpdate();
