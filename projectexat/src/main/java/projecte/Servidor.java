@@ -23,10 +23,10 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
     private static String DATABASE = "projectexat";
     private static String USER = "root";
     private static String PASSWORD = "1234";
-
     public static void main(String[] args) throws IOException { //per provar el receptor de fitxers
         int PUERTO = 54322;
         ServerSocket skk = new ServerSocket(PUERTO);
+
         while( true ){
         try {
             Socket sk = skk.accept(); //accepta una conexión
@@ -42,6 +42,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
      public static class Server extends Thread{
         static Socket sk;
         static String respostaUsuariRebut;
+        static HashMap<String, Socket> usuariosConectados = new HashMap<>(); // Mapa para almacenar sockets de usuarios
         Server( Socket sk ){
             this.sk = sk;
         }
@@ -67,6 +68,8 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                 dos.writeUTF("Introdueix contrasenya:");
                                 String contrasenya = dis.readUTF();
                                 if (iniciSesio(idUsuari,contrasenya)) {
+                                    usuariosConectados.put(idUsuari, sk);
+                                    String emisorUsuario;
                                     boolean sortirSesio = false;
                                     dos.writeUTF("S'ha iniciat sesio correctament");
                                     while (!sortirSesio){
@@ -132,8 +135,29 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                                     e.printStackTrace();
                                                                 }
                                                     } else if (respostaUsuariRebut.equals("0")){
-                                                        respostaUsuariRebut = dis.readUTF();
-                                                        System.out.println("rebut missatge:" + respostaUsuariRebut );
+                                                        if (respostaUsuariRebut.equals("0")) {
+                                                            emisorUsuario = dis.readUTF(); // Lee el nombre de usuario del emisor
+                                                            dos.writeUTF("Introduce el nombre del usuario receptor:");
+                                                            String receptorUsuario = dis.readUTF(); // Lee el nombre de usuario del receptor
+                                                            dos.writeUTF("Introduce el mensaje a enviar:");
+                                                            String mensaje = dis.readUTF(); // Lee el mensaje a enviar
+
+                                                            Socket receptorSocket = usuariosConectados.get(receptorUsuario);
+
+                                                            if (receptorSocket != null) {
+                                                                try {
+                                                                    DataOutputStream dosReceptor = new DataOutputStream(receptorSocket.getOutputStream());
+                                                                    dosReceptor.writeUTF("Mensaje de " + emisorUsuario + ": " + mensaje);
+                                                                    dos.writeUTF("Mensaje enviado con éxito");
+                                                                } catch (IOException e) {
+                                                                    e.printStackTrace();
+                                                                    dos.writeUTF("Error al enviar el mensaje al usuario receptor");
+                                                                }
+                                                            } else {
+                                                                dos.writeUTF("El usuario receptor no está conectado");
+                                                            }
+                                                        }
+                                                      break;
                                                     }
 
                                                     sk.close(); //tanquem la connexió
@@ -292,4 +316,5 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             throw new RuntimeException(e);
         }
     }
+
 }
