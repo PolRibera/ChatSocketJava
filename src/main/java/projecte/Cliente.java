@@ -27,23 +27,19 @@ public class Cliente {
         DataOutputStream dos = new DataOutputStream(sk.getOutputStream());
         DataInputStream dis = new DataInputStream(sk.getInputStream());
         String RespuestaServidor;
-        String s = dis.readUTF();
-        for (int i = 0; i < Integer.parseInt(s); i++) {
-            RespuestaServidor = dis.readUTF();
-            System.out.println(RespuestaServidor);
-        }
+        System.out.println();
         String s1 = sc.next();
         dos.writeUTF(s1);
         switch (Integer.parseInt(s1)){
-            case 0:
-                System.out.println(dis.readUTF());
+            case 1:
+                System.out.println("Introdueix nom d'usuari:");
                 String idUsuari = sc.next();
                 dos.writeUTF(idUsuari);
-                System.out.println(dis.readUTF());
+                System.out.println("Introdueix contrasenya:");
                 String contrasenya = sc.next();
                 dos.writeUTF(contrasenya);
                 break;
-            case 1:
+            case 2:
                 System.out.println(dis.readUTF());
                 String idUsuariC = sc.next();
                 dos.writeUTF(idUsuariC);
@@ -57,14 +53,14 @@ public class Cliente {
                 String contraseñaC = sc.next();
                 dos.writeUTF(contraseñaC);
                 break;
-            case 2:
+            case 3:
                 String RespuestaServidorLLISTAT;
                 String llargadaArrayList = dis.readUTF();
                 for (int i = 0; i < Integer.parseInt(llargadaArrayList); i++) {
                     RespuestaServidorLLISTAT = dis.readUTF();
                     System.out.println(RespuestaServidorLLISTAT);
                 }
-            case 3:
+            case 4:
                 System.out.println(dis.readUTF());
                 s1 = sc.next();
                 dos.writeUTF(s1);
@@ -84,13 +80,39 @@ public class Cliente {
                 }
                 break;
             
-        }
-        
-
+        } 
     }
-    
-       
-    
-   
+ public static void gui(String[] contingut,int height){
+        int width = 40;
+
+        char horizontalChar = '-';
+        char verticalChar = '|';
+
+        for (int i = 0; i < width; i++) {
+            System.out.print(horizontalChar);
+        }
+        System.out.println();
+
+        for (int i = 0; i < height - 2; i++) {
+            System.out.print(verticalChar);
+            if (i < contingut.length) {
+                int contentLength = contingut[i].length();
+                int padding = (width - 2 - contentLength) / 2;
+                for (int j = 0; j < padding; j++) {
+                    System.out.print(" ");
+                }
+                System.out.print(contingut[i]);
+                for (int j = padding + contentLength; j < width - 2; j++) {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println(verticalChar);
+        }
+
+        for (int i = 0; i < width; i++) {
+            System.out.print(horizontalChar);
+        }
+        System.out.println();
+    }
 }
 
