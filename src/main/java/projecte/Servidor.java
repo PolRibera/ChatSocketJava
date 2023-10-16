@@ -49,114 +49,6 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         public void run(){
            FileOutputStream fileOutput;
            BufferedOutputStream bo;
-           String[] pantallaInici = {
-                    "",
-                    "Benvingut a CopernicXat            ",
-                    "",
-                    "1.- [Sign in]                      ",
-                    "2.- [Sign up]                      ",
-                    "3.- [Exit]                         ",
-                    "",
-            };
-
-            String[] signIn = {
-                    "",
-                    "[Sign in]",
-                    "",
-            };
-
-            String[] signUp = {
-                    "",
-                    "[Sign up]",
-                    "",
-            };
-
-            String[] exit ={
-                    "",
-                    "Fins un altre.",
-                    "",
-            };
-
-            String[] pantallaPrincipal = {
-                    "",
-                    "Benvingut a [nom usuari]           ",
-                    "",
-                    "1.- [Opcions Grup]                 ",
-                    "2.- [Opcions fitxers]              ",
-                    "3.- [Xat]                          ",
-                    "4.- [Configuració servidor]        ",
-                    "5.- [Configuració client]          ",
-                    "6.- [Sign out]                     ",
-                    "",
-            };
-
-            String[] opGrup = {
-                    "",
-                    "Opcions Grup                       ",
-                    "",
-                    "1.- [Donar d’alta client]          ",
-                    "2.- [Donar de baixa client]        ",
-                    "3.- [Administrar grup]             ",
-                    "4.- [Menu principal]               ",
-                    "",
-            };
-
-            String[] adminGrup = {
-                    "",
-                    "Administrar grup                   ",
-                    "",
-                    "1.- [Afegir usuari]                ",
-                    "2.- [Esborrar usuari]              ",
-                    "3.- [Llistar membres del grup]     ",
-                    "",
-            };
-
-            String[] opFitxers = {
-                    "",
-                    "Opcions fitxers                    ",
-                    "",
-                    "1.- [Enviar fitxer al servidor]    ",
-                    "2.- [Llegir fitxer]                ",
-                    "3.- [Descarregar fitxer]           ",
-                    "4.- [Menu principal]               ",
-                    "",
-            };
-
-            String[]  opXat = {
-                    "",
-                    "Xat                                ",
-                    "",
-                    "1.- [Enviar missatge]              ",
-                    "2.- [Llegir missatge]              ",
-                    "3.- [Menu principal]               ",
-                    "",
-            };
-
-            String[] confServidor = {
-                    "",
-                    "Configurar servidor                ",
-                    "",
-                    "1.- [Tamany maxim fitxer]          ",
-                    "2.- [Maximas conexions simultaneas]",
-                    "3.- [Nova contrasenya BDD]         ",
-                    "4.- [Client administrador]         ",
-                    "5.- [Cambiar nom del servidor]     ",
-                    "6.- [Ruta guardar fitxers]         ",
-                    "7.- [Menu principal]               ",
-                    "",
-            };
-
-            String[] confClient = {
-                    "",
-                    "Configurar servidor                ",
-                    "",
-                    "1.- [Cambiar nom client]           ",
-                    "2.- [Tamany maxim que pot rebre]   ",
-                    "3.- [Cambiar ip servidor]          ",
-                    "4.- [Port per defecta servidor]    ",
-                    "7.- [Menu principal]               ",
-                    "",
-            };
            File fo;
             try {
                 DataOutputStream dos = new DataOutputStream(sk.getOutputStream());
@@ -165,10 +57,6 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 while (!sortir){
                     ArrayList<String> missatgesAEnviar = new ArrayList<>();
                     System.out.println("llegit " + sk.getInetAddress() + ":" + sk.getPort());
-                    dos.writeUTF(String.valueOf(gui(pantallaInici, 9).size()));
-                    for (int i = 0; i < gui(pantallaInici, 9).size(); i++) {
-                    dos.writeUTF(gui(pantallaInici,9).get(i));
-                    }
                     respostaUsuariRebut = dis.readUTF();
                     switch(Integer.parseInt(respostaUsuariRebut)){
                         case 1:
