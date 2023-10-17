@@ -2,8 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 package projecte;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,129 +12,117 @@ import java.util.Scanner;
 
 /**
  * a
+ *
  * @author Ricard Sierra, Pol Ribera, Alex Montoya
  */
 public class Cliente {
-        public static Scanner sc = new Scanner(System.in);
-        
-        
+
+    public static Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) throws IOException, InterruptedException {
-        
+
         String[] pantallaInici = {
-                    "",
-                    "Benvingut a CopernicXat            ",
-                    "",
-                    "1.- [Sign in]                      ",
-                    "2.- [Sign up]                      ",
-                    "3.- [Exit]                         ",
-                    "",
-            };
-            String[] pantallaPrincipal = {
-                    "",
-                    "Benvingut a [nom usuari]           ",
-                    "",
-                    "1.- [Opcions Grup]                 ",
-                    "2.- [Opcions fitxers]              ",
-                    "3.- [Xat]                          ",
-                    "4.- [Configuració servidor]        ",
-                    "5.- [Configuració client]          ",
-                    "6.- [Sign out]                     ",
-                    "",
-            };
+            "",
+            "Benvingut a CopernicXat            ",
+            "",
+            "1.- [Sign in]                      ",
+            "2.- [Sign up]                      ",
+            "3.- [Exit]                         ",
+            "",};
+        String[] pantallaPrincipal = {
+            "",
+            "Benvingut a [nom usuari]           ",
+            "",
+            "1.- [Opcions Grup]                 ",
+            "2.- [Opcions fitxers]              ",
+            "3.- [Xat]                          ",
+            "4.- [Configuració servidor]        ",
+            "5.- [Configuració client]          ",
+            "6.- [Sign out]                     ",
+            "",};
 
-            String[] signIn = {
-                    "",
-                    "[Sign in]",
-                    "",
-            };
+        String[] signIn = {
+            "",
+            "[Sign in]",
+            "",};
 
-            String[] signUp = {
-                    "",
-                    "[Sign up]",
-                    "",
-            };
+        String[] signUp = {
+            "",
+            "[Sign up]",
+            "",};
 
-            String[] exit ={
-                    "",
-                    "Fins un altre.",
-                    "",
-  
-            };
+        String[] exit = {
+            "",
+            "Fins un altre.",
+            "",};
 
-            String[] opGrup = {
-                    "",
-                    "Opcions Grup                       ",
-                    "",
-                    "1.- [Donar d’alta grup]          ",
-                    "2.- [Donar de baixa grup]        ",
-                    "3.- [Administrar grup]             ",
-                    "4.- [Menu principal]               ",
-                    "",
-            };
+        String[] opGrup = {
+            "",
+            "Opcions Grup                       ",
+            "",
+            "1.- [Donar d’alta grup]          ",
+            "2.- [Donar de baixa grup]        ",
+            "3.- [Administrar grup]             ",
+            "4.- [Menu principal]               ",
+            "",};
 
-            String[] adminGrup = {
-                    "",
-                    "Administrar grup                   ",
-                    "",
-                    "1.- [Afegir usuari]                ",
-                    "2.- [Esborrar usuari]              ",
-                    "3.- [Llistar membres del grup]     ",
-                    "",
-            };
+        String[] adminGrup = {
+            "",
+            "Administrar grup                   ",
+            "",
+            "1.- [Afegir usuari]                ",
+            "2.- [Esborrar usuari]              ",
+            "3.- [Llistar membres del grup]     ",
+            "",};
 
-            String[] opFitxers = {
-                    "",
-                    "Opcions fitxers                    ",
-                    "",
-                    "1.- [Enviar fitxer al servidor]    ",
-                    "2.- [Llegir fitxer]                ",
-                    "3.- [Descarregar fitxer]           ",
-                    "4.- [Menu principal]               ",
-                    "",
-            };
+        String[] opFitxers = {
+            "",
+            "Opcions fitxers                    ",
+            "",
+            "1.- [Enviar fitxer al servidor]    ",
+            "2.- [Llegir fitxer]                ",
+            "3.- [Descarregar fitxer]           ",
+            "4.- [Menu principal]               ",
+            "",};
 
-            String[]  opXat = {
-                    "",
-                    "Xat                                ",
-                    "",
-                    "1.- [Enviar missatge]              ",
-                    "2.- [Llegir missatge]              ",
-                    "3.- [Llistar usuaris]              ",
-                    "4.- [Menu principal]               ",
-                    "",
-            };
+        String[] opXat = {
+            "",
+            "Xat                                ",
+            "",
+            "1.- [Enviar missatge]              ",
+            "2.- [Llegir missatge]              ",
+            "3.- [Llistar usuaris]              ",
+            "4.- [Menu principal]               ",
+            "",};
 
-            String[] confServidor = {
-                    "",
-                    "Configurar servidor                ",
-                    "",
-                    "1.- [Tamany maxim fitxer]          ",
-                    "2.- [Maximas conexions simultaneas]",
-                    "3.- [Nova contrasenya BDD]         ",
-                    "4.- [Client administrador]         ",
-                    "5.- [Cambiar nom del servidor]     ",
-                    "6.- [Ruta guardar fitxers]         ",
-                    "7.- [Menu principal]               ",
-                    "",
-            };
+        String[] confServidor = {
+            "",
+            "Configurar servidor                ",
+            "",
+            "1.- [Tamany maxim fitxer]          ",
+            "2.- [Maximas conexions simultaneas]",
+            "3.- [Nova contrasenya BDD]         ",
+            "4.- [Client administrador]         ",
+            "5.- [Cambiar nom del servidor]     ",
+            "6.- [Ruta guardar fitxers]         ",
+            "7.- [Menu principal]               ",
+            "",};
 
-            String[] confClient = {
-                    "",
-                    "Configurar servidor                ",
-                    "",
-                    "1.- [Cambiar nom client]           ",
-                    "2.- [Tamany maxim que pot rebre]   ",
-                    "3.- [Cambiar ip servidor]          ",
-                    "4.- [Port per defecta servidor]    ",
-                    "7.- [Menu principal]               ",
-                    "",
-            };
+        String[] confClient = {
+            "",
+            "Configurar servidor                ",
+            "",
+            "1.- [Cambiar nom client]           ",
+            "2.- [Tamany maxim que pot rebre]   ",
+            "3.- [Cambiar ip servidor]          ",
+            "4.- [Port per defecta servidor]    ",
+            "7.- [Menu principal]               ",
+            "",};
 
-        
         System.out.println("Inicia cliente");
-        
-        Socket sk = new Socket( "localhost",54322); //accepta una conexión
-        
+
+        Socket sk = new Socket("localhost", 54322); //accepta una conexión
+
         DataOutputStream dos = new DataOutputStream(sk.getOutputStream());
         DataInputStream dis = new DataInputStream(sk.getInputStream());
         String RespuestaServidor;
@@ -143,59 +131,77 @@ public class Cliente {
         String s1 = sc.next();
         boolean sortir = false;
         dos.writeUTF(s1);
-        while(!sortir){
-        switch (Integer.parseInt(s1)){
-            case 1:
-                int con = 0;
-                gui(signIn, 5);
-                while(con <= 3){
-                    System.out.println("Introdueix nom d'usuari:");
-                    String idUsuari = sc.next();
-                    System.out.println("Introdueix contrasenya:");
-                    String contrasenya = sc.next();
-                    dos.writeUTF(idUsuari);
-                    dos.writeUTF(contrasenya);
-                    String repServidor = dis.readUTF();
-                    if (repServidor.equals("false")) {
-                        System.out.println("La contrasenya o el usuari son incorrectes.");
-                        con++;
-                    } else if (repServidor.equals("true")){
-                        System.out.println("Has iniciat sesió.");
+        while (!sortir) {
+            switch (Integer.parseInt(s1)) {
+                case 1:
+                    int con = 0;
+                    String repServidor = "";
+
+                    gui(signIn, 5);
+                    while (con <= 3) {
+                        System.out.println("Introdueix nom d'usuari:");
+                        String idUsuari = sc.next();
+                        System.out.println("Introdueix contrasenya:");
+                        String contrasenya = sc.next();
+                        dos.writeUTF(idUsuari);
+                        dos.writeUTF(contrasenya);
+                        repServidor = dis.readUTF();
+                        if (repServidor.equals("false")) {
+                            System.out.println("La contrasenya o el usuari son incorrectes.");
+                            con++;
+                        } else if (repServidor.equals("true")) {
+                            System.out.println("Has iniciat sesió.");
+                            break;
+                        }
+                    }
+                    if (repServidor.equals("true")) {
                         Thread.sleep(2000);
                         gui(pantallaPrincipal, 12);
                         s1 = sc.next();
-                            switch (Integer.parseInt(s1)) {
-                            }
-                        break;
+                        switch (Integer.parseInt(s1)) {
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                break;
+                            case 4:
+                                break;
+                            case 5:
+                                break;
+                            case 6:
+                                break;
+
+                        }
+
                     }
-                }
-                break;
-            case 2:
-                gui(signUp, 5);
-                System.out.println("Introdueix id d'usuari:");
-                String idUsuariC = sc.next();
-                dos.writeUTF(idUsuariC);
-                System.out.println("Introdueix nom d'usuari:");
-                String NomC = sc.next();
-                dos.writeUTF(NomC);
-                System.out.println("Introdueix cognom d'usuari:");
-                String CognomC = sc.next();
-                dos.writeUTF(CognomC);
-                System.out.println("Introdueix contrasenya d'usuari:");
-                String contraseñaC = sc.next();
-                dos.writeUTF(contraseñaC);
-                break;
-            case 3:
-                if(dis.readUTF().equals("true")){
-                sortir = true;
-                }
-                
-                break;
-                
-        }  
-        } 
+                case 2:
+                    gui(signUp, 5);
+                    System.out.println("Introdueix id d'usuari:");
+                    String idUsuariC = sc.next();
+                    dos.writeUTF(idUsuariC);
+                    System.out.println("Introdueix nom d'usuari:");
+                    String NomC = sc.next();
+                    dos.writeUTF(NomC);
+                    System.out.println("Introdueix cognom d'usuari:");
+                    String CognomC = sc.next();
+                    dos.writeUTF(CognomC);
+                    System.out.println("Introdueix contrasenya d'usuari:");
+                    String contraseñaC = sc.next();
+                    dos.writeUTF(contraseñaC);
+                    break;
+                case 3:
+                    if (dis.readUTF().equals("true")) {
+                        sortir = true;
+                    }
+
+                    break;
+
+            }
+        }
     }
- public static void gui(String[] contingut,int height){
+
+    public static void gui(String[] contingut, int height) {
         int width = 40;
 
         char horizontalChar = '-';
