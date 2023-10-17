@@ -48,40 +48,25 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         }
         @Override
         public void run(){
-           FileOutputStream fileOutput;
-           BufferedOutputStream bo;
-           File fo;
             try {
                 DataOutputStream dos = new DataOutputStream(sk.getOutputStream());
                 DataInputStream dis = new DataInputStream(sk.getInputStream());
                 boolean sortir = false;
                 while (!sortir){
-                    ArrayList<String> missatgesAEnviar = new ArrayList<>();
                     System.out.println("llegit " + sk.getInetAddress() + ":" + sk.getPort());
                     respostaUsuariRebut = dis.readUTF();
                     switch(Integer.parseInt(respostaUsuariRebut)){
                         case 1:
                             if (esCorrectoDriver()) {
                                 cn = obtenerCon();
-                                dos.writeUTF("Introdueix nom d'usuari:");
                                 String idUsuari = dis.readUTF();
-                                dos.writeUTF("Introdueix contrasenya:");
                                 String contrasenya = dis.readUTF();
                                 if (iniciSesio(idUsuari,contrasenya)) {
                                     usuariosConectados.put(idUsuari, sk);
-                                    String emisorUsuario;
                                     boolean sortirSesio = false;
-                                    dos.writeUTF("S'ha iniciat sesio correctament");
+                                    dos.writeUTF("true");
                                     while (!sortirSesio){
-                                        ArrayList<String> missatgesAEnviarLogined = new ArrayList<>();
-                                        System.out.println("llegit " + sk.getInetAddress() + ":" + sk.getPort());
-                                        missatgesAEnviarLogined.add("0: Llistar Usuaris");
-                                        missatgesAEnviarLogined.add("1: Enviar String o Fitxer al servidor ");
-                                        missatgesAEnviarLogined.add("2: Exit");
-                                        dos.writeUTF(""+missatgesAEnviarLogined.size()+"");
-                                        for (int i = 0; i < missatgesAEnviarLogined.size(); i++) {
-                                            dos.writeUTF(missatgesAEnviarLogined.get(i));
-                                        }
+                                        
                                         respostaUsuariRebut = dis.readUTF();
                                         switch(Integer.parseInt(respostaUsuariRebut)){
                                             case 0:
@@ -95,59 +80,20 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                              }
                                             break;
                                             case 1:
-                                                dos.writeUTF("Que vols fer? 0: Enviar String 1:Enviar Fitxer");
                                                 respostaUsuariRebut = dis.readUTF();
                                                     if (respostaUsuariRebut.equals("1")) {
-                                                                 try {
                                                                     respostaUsuariRebut = dis.readUTF();
-                                                                    dos.writeUTF("Fitxer rebut: "+respostaUsuariRebut);
-                                                                    String s2[] = respostaUsuariRebut.split("[\\\\/]"); //per si acàs, treiem la ruta del nom del fitxer, per si s'ha posat
-                                                                     int lbloc = 2048; //no cal que sigui el mateix tamany en el emisor i receptor
-                                                                    respostaUsuariRebut = s2[s2.length - 1];
-                                                                    String nomfichPrevi = "rebrent_" + respostaUsuariRebut; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
-                                                                    long lfic = dis.readLong();
-                                                                    fo = new File(nomfichPrevi);
-                                                                    fo.delete(); //Eliminem el fitxer per si ja existia d'abans
-                                                                    fileOutput = new FileOutputStream(fo);
-                                                                    bo = new BufferedOutputStream(fileOutput);
-                                                                    System.out.println("El fitxer ocuparà " + lfic + " bytes");
-                                                                    byte b[] = new byte[(int) lbloc];
-                                                                    long lleva = 0;
-                                                                    while (lleva < lfic) {
-                                                                        int leido;
-                                                                        if (lfic - lleva > lbloc) {
-                                                                            leido = dis.read(b, 0, lbloc); //llegeix com al molt lbloc bytes, però pot ser que sigui altra quantitat menor
-                                                                        } else {//falten menys bytes que lbloc
-                                                                            leido = dis.read(b, 0, (int) (lfic - lleva)); //llegeix com a molt tants bytes com falten
-                                                                        }
-                                                                        bo.write(b, 0, leido);
-                                                                        lleva = lleva + leido; //per saber quants es porten llegits
-                                                                        System.out.println("Bytes rebuts: " + leido + " portem: " + lleva + " bytes");
-                                                                    }
-                                                                    bo.close();
-                                                                    //reanomena el fitxer
-                                                                    File nufile = new File("rec_" + respostaUsuariRebut); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
-                                                                    nufile.delete();
-                                                                    fo.renameTo(nufile);
-                                                                    System.out.println("Fitxer descargat: "+respostaUsuariRebut);
-
-                                                                } catch (IOException e) {
-                                                                    e.printStackTrace();
-                                                                }
+                                                                    descaregarFitxer(respostaUsuariRebut,dos,dis);
                                                     } else if (respostaUsuariRebut.equals("0")){
                                                         if (respostaUsuariRebut.equals("0")) {
-                                                            emisorUsuario = dis.readUTF(); // Lee el nombre de usuario del emisor
-                                                            dos.writeUTF("Introduce el nombre del usuario receptor:");
                                                             String receptorUsuario = dis.readUTF(); // Lee el nombre de usuario del receptor
-                                                            dos.writeUTF("Introduce el mensaje a enviar:");
                                                             String mensaje = dis.readUTF(); // Lee el mensaje a enviar
-
                                                             Socket receptorSocket = usuariosConectados.get(receptorUsuario);
 
                                                             if (receptorSocket != null) {
                                                                 try {
                                                                     DataOutputStream dosReceptor = new DataOutputStream(receptorSocket.getOutputStream());
-                                                                    dosReceptor.writeUTF("Mensaje de " + emisorUsuario + ": " + mensaje);
+                                                                    dosReceptor.writeUTF("Mensaje de " + idUsuari +" a "+receptorUsuario+ ": " + mensaje);
                                                                     dos.writeUTF("Mensaje enviado con éxito");
                                                                 } catch (IOException e) {
                                                                     e.printStackTrace();
@@ -168,7 +114,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                         }
                                     }
                                 } else {
-                                    dos.writeUTF("Nom d'usuari o contrasenya incorrecte!");
+                                    dos.writeUTF("false");
                                 }
                                 };
 
@@ -315,6 +261,38 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static void descaregarFitxer(String respostaUsuariRebut,DataOutputStream dos,DataInputStream dis) throws IOException{
+           FileOutputStream fileOutput;
+           BufferedOutputStream bo;
+           File fo;
+            String s2[] = respostaUsuariRebut.split("[\\\\/]"); //per si acàs, treiem la ruta del nom del fitxer, per si s'ha posat
+            int lbloc = 2048; //no cal que sigui el mateix tamany en el emisor i receptor
+            respostaUsuariRebut = s2[s2.length - 1];
+            String nomfichPrevi = "rebrent_" + respostaUsuariRebut; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
+            long lfic = dis.readLong();
+            fo = new File(nomfichPrevi);
+            fo.delete(); //Eliminem el fitxer per si ja existia d'abans
+            fileOutput = new FileOutputStream(fo);
+            bo = new BufferedOutputStream(fileOutput);
+            byte b[] = new byte[(int) lbloc];
+            long lleva = 0;
+             while (lleva < lfic) {
+                    int leido;
+                    if (lfic - lleva > lbloc) {
+                        leido = dis.read(b, 0, lbloc); //llegeix com al molt lbloc bytes, però pot ser que sigui altra quantitat menor
+                    } else {//falten menys bytes que lbloc
+                        leido = dis.read(b, 0, (int) (lfic - lleva)); //llegeix com a molt tants bytes com falten
+                    }
+                    bo.write(b, 0, leido);
+                        lleva = lleva + leido; //per saber quants es porten llegits
+                    }
+            bo.close();
+                                                                    //reanomena el fitxer
+        File nufile = new File("rec_" + respostaUsuariRebut); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
+        nufile.delete();
+        fo.renameTo(nufile);
+        System.out.println("Fitxer descargat: "+respostaUsuariRebut);
     }
 
 }

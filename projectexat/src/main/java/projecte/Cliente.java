@@ -152,16 +152,16 @@ public class Cliente {
                 dos.writeUTF(contrasenya);
                 break;
             case 2:
-                System.out.println(dis.readUTF());
+                System.out.println("Introdueix id d'usuari:");
                 String idUsuariC = sc.next();
                 dos.writeUTF(idUsuariC);
-                System.out.println(dis.readUTF());
+                System.out.println("Introdueix nom d'usuari:");
                 String NomC = sc.next();
                 dos.writeUTF(NomC);
-                System.out.println(dis.readUTF());
+                System.out.println("Introdueix cognom d'usuari:");
                 String CognomC = sc.next();
                 dos.writeUTF(CognomC);
-                System.out.println(dis.readUTF());
+                System.out.println("Introdueix contrasenya d'usuari:");
                 String contraseñaC = sc.next();
                 dos.writeUTF(contraseñaC);
                 break;
