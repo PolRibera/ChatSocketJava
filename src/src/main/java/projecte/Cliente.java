@@ -157,7 +157,7 @@ public class Cliente {
                                 "6.- [Sign out]                     ",
                                 "",};
                     if (repServidor.equals("true")) {
-                        Thread.sleep(2000);
+                        Thread.sleep(500);
                         gui(pantallaPrincipal);
                         s1 = sc.next();
                         switch (Integer.parseInt(s1)) {
