@@ -146,27 +146,25 @@ public class Cliente {
             case 1:
                 int con = 0;
                 gui(signIn, 5);
-                while(dis.readUTF().equals("false") || con <= 3){
+                while(con <= 3){
                     System.out.println("Introdueix nom d'usuari:");
                     String idUsuari = sc.next();
                     System.out.println("Introdueix contrasenya:");
                     String contrasenya = sc.next();
                     dos.writeUTF(idUsuari);
                     dos.writeUTF(contrasenya);
-                    if (dis.readUTF().equals("false")) {
+                    String repServidor = dis.readUTF();
+                    if (repServidor.equals("false")) {
                         System.out.println("La contrasenya o el usuari son incorrectes.");
-                    }
-                    
-                }
-                if (dis.readUTF().equals("true")) {
-                    System.out.println("Has iniciat sesió.");
-                    Thread.sleep(2000);
-                    gui(pantallaPrincipal, 12);
-                    s1= sc.next();
-                    switch(Integer.parseInt(s1)){
-                        
-                    
-                    
+                        con++;
+                    } else if (repServidor.equals("true")){
+                        System.out.println("Has iniciat sesió.");
+                        Thread.sleep(2000);
+                        gui(pantallaPrincipal, 12);
+                        s1 = sc.next();
+                            switch (Integer.parseInt(s1)) {
+                            }
+                        break;
                     }
                 }
                 break;

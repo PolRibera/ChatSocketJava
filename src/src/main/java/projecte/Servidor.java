@@ -66,7 +66,6 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                     boolean sortirSesio = false;
                                     dos.writeUTF("true");
                                     while (!sortirSesio){
-                                        
                                         respostaUsuariRebut = dis.readUTF();
                                         switch(Integer.parseInt(respostaUsuariRebut)){
                                             case 0:
