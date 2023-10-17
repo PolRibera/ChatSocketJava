@@ -99,7 +99,8 @@ public class Cliente {
                     "",
                     "1.- [Enviar missatge]              ",
                     "2.- [Llegir missatge]              ",
-                    "3.- [Menu principal]               ",
+                    "3.- [Llistar usuaris]              ",
+                    "4.- [Menu principal]               ",
                     "",
             };
 
@@ -140,8 +141,9 @@ public class Cliente {
         System.out.println();
         gui(pantallaInici, 9);
         String s1 = sc.next();
-        
+        boolean sortir = false;
         dos.writeUTF(s1);
+        while(!sortir){
         switch (Integer.parseInt(s1)){
             case 1:
                 int con = 0;
@@ -184,32 +186,13 @@ public class Cliente {
                 dos.writeUTF(contraseñaC);
                 break;
             case 3:
-                String RespuestaServidorLLISTAT;
-                String llargadaArrayList = dis.readUTF();
-                for (int i = 0; i < Integer.parseInt(llargadaArrayList); i++) {
-                    RespuestaServidorLLISTAT = dis.readUTF();
-                    System.out.println(RespuestaServidorLLISTAT);
+                if(dis.readUTF().equals("true")){
+                sortir = true;
                 }
-            case 4:
-                System.out.println(dis.readUTF());
-                s1 = sc.next();
-                dos.writeUTF(s1);
-                System.out.println("Enviado " + s1 );
-                if (s1.equals("1")) {
-                   System.out.println("Connectem amb el servidor");
-                   System.out.println("Indica la ruta");
-                   String ruta = sc.next();
-                   ConClientFitxer ef = new ConClientFitxer(sk,ruta); //posar el fitxer a enviar, podem posar-lo amb la ruta al fitxer  
-                   System.out.println("fitxer enviat:  " + ef.nomfich);
-                   sk.close();
-                } else if (s1.equals("0")){
-                   System.out.println("Indica el missatge que vols enviar");
-                   String s2 = sc.next();
-                   dos.writeUTF(s2);
-                   System.out.println("Enviado " + s2 );
-                }
+                
                 break;
-            
+                
+        }  
         } 
     }
  public static void gui(String[] contingut,int height){

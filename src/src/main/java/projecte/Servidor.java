@@ -130,6 +130,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                             break;
                         case 3:
                             sortir=true;
+                            dos.writeUTF("true");
                             break;
                     }
                }
