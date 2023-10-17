@@ -122,13 +122,9 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                         case 2:
                             if (esCorrectoDriver()) {
                                 cn = obtenerCon();
-                                dos.writeUTF("Introdueix id d'usuari:");
                                 String idUsuariC = dis.readUTF();
-                                dos.writeUTF("Introdueix nom d'usuari:");
                                 String NomC = dis.readUTF();
-                                dos.writeUTF("Introdueix cognom d'usuari:");
                                 String CognomC = dis.readUTF();
-                                dos.writeUTF("Introdueix contrasenya d'usuari:");
                                 String contraseñaC = dis.readUTF();
                                 usuarioInsert(idUsuariC, NomC, CognomC, contraseñaC);
                             }
