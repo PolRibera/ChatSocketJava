@@ -1,6 +1,5 @@
 package projecte;
 
-
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
@@ -11,64 +10,80 @@ import java.util.*;
 import java.util.logging.*;
 import static projecte.baseDades.obtenerCon;
 
-
 /**
  *
- *  @author Ricard Sierra, Pol Ribera, Alex Montoya
+ * @author Ricard Sierra, Pol Ribera, Alex Montoya
  */
 public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
+
     private static Connection cn;
     private static Scanner sc;
     private static String HOST = "localhost";
     private static String DATABASE = "projectexat";
     private static String USER = "root";
-    private static String PASSWORD = "1234";
+    private static String PASSWORD = "admin";
+
     public static void main(String[] args) throws IOException { //per provar el receptor de fitxers
         int PUERTO = 54322;
         ServerSocket skk = new ServerSocket(PUERTO);
 
-        while( true ){
-        try {
-            Socket sk = skk.accept(); //accepta una conexión
-            Server sv = new Server( sk );
-            System.out.println("Escoltant el port " + PUERTO);
-            System.out.println("connectant amb el client " + sk.getInetAddress().getHostAddress() );
-            sv.start();
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                Socket sk = skk.accept(); //accepta una conexión
+                Server sv = new Server(sk);
+                System.out.println("Escoltant el port " + PUERTO);
+                System.out.println("connectant amb el client " + sk.getInetAddress().getHostAddress());
+                sv.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-       }
     }
-     public static class Server extends Thread{
+
+    public static class Server extends Thread {
+
         static Socket sk;
         static String respostaUsuariRebut;
         static HashMap<String, Socket> usuariosConectados = new HashMap<>(); // Mapa para almacenar sockets de usuarios
-        Server( Socket sk ){
+
+        Server(Socket sk) {
             this.sk = sk;
         }
+
         @Override
-        public void run(){
+        public void run() {
             try {
                 DataOutputStream dos = new DataOutputStream(sk.getOutputStream());
                 DataInputStream dis = new DataInputStream(sk.getInputStream());
                 boolean sortir = false;
-                while (!sortir){
+                while (!sortir) {
                     System.out.println("llegit " + sk.getInetAddress() + ":" + sk.getPort());
                     respostaUsuariRebut = dis.readUTF();
-                    switch(Integer.parseInt(respostaUsuariRebut)){
+                    switch (Integer.parseInt(respostaUsuariRebut)) {
                         case 1:
                             if (esCorrectoDriver()) {
                                 cn = obtenerCon();
                                 String idUsuari = dis.readUTF();
                                 String contrasenya = dis.readUTF();
-                                if (iniciSesio(idUsuari,contrasenya)) {
+                                if (iniciSesio(idUsuari, contrasenya)) {
                                     usuariosConectados.put(idUsuari, sk);
                                     boolean sortirSesio = false;
                                     dos.writeUTF("true");
-                                    while (!sortirSesio){
+                                    while (!sortirSesio) {
                                         respostaUsuariRebut = dis.readUTF();
-                                        switch(Integer.parseInt(respostaUsuariRebut)){
+                                        switch (Integer.parseInt(respostaUsuariRebut)) {
                                             case 1:
+                                                respostaUsuariRebut = dis.readUTF();
+                                                switch (Integer.parseInt(respostaUsuariRebut)) {
+                                                    case 1:
+                                                        String idgrupo = dis.readUTF();
+                                                        crearGrupo(idgrupo, idUsuari);
+                                                        break;
+                                                    case 2:
+                                                        idgrupo = dis.readUTF();
+                                                        borrarGrupo(idgrupo, idUsuari, dos);
+                                                        break;
+                                                }
                                                 break;
                                             case 2:
                                                 break;
@@ -80,14 +95,15 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                 break;
                                             case 6:
                                                 dos.writeUTF("true");
-                                                sortirSesio=true;
+                                                sortirSesio = true;
                                                 break;
                                         }
                                     }
                                 } else {
                                     dos.writeUTF("false");
                                 }
-                                };
+                            }
+                            ;
 
                             break;
                         case 2:
@@ -101,17 +117,18 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                             }
                             break;
                         case 3:
-                            sortir=true;
+                            sortir = true;
                             dos.writeUTF("true");
                             break;
                     }
-               }
+                }
             } catch (IOException ex) {
                 Logger.getLogger(ConecInicialServidorString.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-     public static Connection obtenerCon() {
+
+    public static Connection obtenerCon() {
         if (cn == null) {
             try {
                 cn = DriverManager.getConnection("jdbc:mysql://" + HOST + ":3306/" + DATABASE + "?autoReconnect=true", USER, PASSWORD);
@@ -132,7 +149,8 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             return false;
         }
     }
-    private static boolean iniciSesio(String   idUsuario,String contrasenya){
+
+    private static boolean iniciSesio(String idUsuario, String contrasenya) {
         try {
             PreparedStatement st = cn.prepareStatement("SELECT * FROM usuario WHERE idusuario = ? AND contraseña = ?");
             st.setString(1, idUsuario);
@@ -151,6 +169,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         }
         return false;
     }
+
     private static void usuarioInsert(String idusuario, String name, String cognoms, String contraseña) {
         try {
             PreparedStatement st = cn.prepareStatement("INSERT INTO usuario(idusuario, nom, cognoms, contraseña) VALUES (?, ?, ?, ?);");
@@ -161,10 +180,11 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             st.setString(4, hash);
             st.executeUpdate();
         } catch (SQLException e) {
-            System.out.println( e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
-    private static ArrayList<String> llistarUsuaris() throws IOException{
+
+    private static ArrayList<String> llistarUsuaris() throws IOException {
         try {
             ArrayList<String> missatgesAEnviar = new ArrayList<>();
             PreparedStatement st2 = cn.prepareStatement("SELECT idusuario, nom, cognoms, contraseña FROM usuario;");
@@ -174,10 +194,101 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             }
             return missatgesAEnviar;
         } catch (SQLException e) {
-            System.out.println( e.getMessage());
+            System.out.println(e.getMessage());
         }
         return null;
     }
+
+    private static void crearGrupo(String idgrupo, String idusuario) {
+        try {
+            PreparedStatement st = cn.prepareStatement("INSERT INTO grupo(idgrupo, idadmin) VALUES (?, ?);");
+            st.setString(1, idgrupo);
+            st.setString(2, idusuario);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void borrarGrupo(String idgrupo, String idusuario, DataOutputStream dos) throws IOException {
+        try {
+            PreparedStatement st1 = cn.prepareStatement("SELECT idgrupo FROM grupo WHERE idgrupo = ?;");
+            st1.setString(1, idgrupo);
+            ResultSet rs1 = st1.executeQuery();
+            if (rs1.next()) {
+                PreparedStatement st2 = cn.prepareStatement("SELECT idadmin FROM grupo WHERE idadmin = ? AND idgrupo = ?;");
+                st2.setString(1, idusuario);
+                st2.setString(2, idgrupo);
+                ResultSet rs2 = st2.executeQuery();
+                if (rs2.next()) {
+                    PreparedStatement st3 = cn.prepareStatement("DELETE FROM grupo WHERE idgrupo = ?;");
+                    st3.setString(1, idgrupo);
+                    st3.execute();
+                    dos.writeUTF("correcte");
+                } else {
+                    dos.writeUTF("admin");
+                }
+            } else {
+                dos.writeUTF("grup");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void afegirUsuari(String idgrupo, String idusuario) {
+        try {
+            PreparedStatement st = cn.prepareStatement("INSERT INTO grupo_usuario(idgrupo, idusuario) VALUES (?, ?,);");
+            st.setString(1, idgrupo);
+            st.setString(2, idusuario);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void esborrarUsuari(String idgrupo, String idusuario) {
+        try {
+            PreparedStatement st = cn.prepareStatement("DELETE FROM grupo_usuario WHERE idgrupo = ? AND idusuario = ?");
+            st.setString(1, idgrupo);
+            st.setString(2, idusuario);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static ArrayList<String> llistarUsuarisGrup(String idgrupo, String idusuario) {
+        ArrayList<String> membres = new ArrayList<>();
+        try {
+            PreparedStatement st = cn.prepareStatement("SELECT idusuario FROM grupo_usuario WHERE idgrupo = ?;");
+            st.setString(1, idgrupo);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                membres.add(rs.getString("idusuario"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return membres;
+    }
+
+    private static ArrayList<String> llistarGrups(String idusuari) throws IOException {
+        try {
+            ArrayList<String> grups = new ArrayList<>();
+            PreparedStatement st = cn.prepareStatement("SELECT idgrupo FROM grupo WHERE idadmin = ?;");
+            st.setString(1, idusuari);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                grups.add(rs.getString("idgrupo"));
+            }
+            return grups;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     public static ArrayList<String> gui(String[] contingut, int height) {
         int width = 40;
 
@@ -215,6 +326,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
 
         return guiArray;
     }
+
     public static String cifrar(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -225,42 +337,42 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 hashtext = "0" + hashtext;
             }
             return hashtext;
-        } 
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
-    public static void descaregarFitxer(String respostaUsuariRebut,DataOutputStream dos,DataInputStream dis) throws IOException{
-           FileOutputStream fileOutput;
-           BufferedOutputStream bo;
-           File fo;
-            String s2[] = respostaUsuariRebut.split("[\\\\/]"); //per si acàs, treiem la ruta del nom del fitxer, per si s'ha posat
-            int lbloc = 2048; //no cal que sigui el mateix tamany en el emisor i receptor
-            respostaUsuariRebut = s2[s2.length - 1];
-            String nomfichPrevi = "rebrent_" + respostaUsuariRebut; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
-            long lfic = dis.readLong();
-            fo = new File(nomfichPrevi);
-            fo.delete(); //Eliminem el fitxer per si ja existia d'abans
-            fileOutput = new FileOutputStream(fo);
-            bo = new BufferedOutputStream(fileOutput);
-            byte b[] = new byte[(int) lbloc];
-            long lleva = 0;
-             while (lleva < lfic) {
-                    int leido;
-                    if (lfic - lleva > lbloc) {
-                        leido = dis.read(b, 0, lbloc); //llegeix com al molt lbloc bytes, però pot ser que sigui altra quantitat menor
-                    } else {//falten menys bytes que lbloc
-                        leido = dis.read(b, 0, (int) (lfic - lleva)); //llegeix com a molt tants bytes com falten
-                    }
-                    bo.write(b, 0, leido);
-                        lleva = lleva + leido; //per saber quants es porten llegits
-                    }
-            bo.close();
-                                                                    //reanomena el fitxer
+
+    public static void descaregarFitxer(String respostaUsuariRebut, DataOutputStream dos, DataInputStream dis) throws IOException {
+        FileOutputStream fileOutput;
+        BufferedOutputStream bo;
+        File fo;
+        String s2[] = respostaUsuariRebut.split("[\\\\/]"); //per si acàs, treiem la ruta del nom del fitxer, per si s'ha posat
+        int lbloc = 2048; //no cal que sigui el mateix tamany en el emisor i receptor
+        respostaUsuariRebut = s2[s2.length - 1];
+        String nomfichPrevi = "rebrent_" + respostaUsuariRebut; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
+        long lfic = dis.readLong();
+        fo = new File(nomfichPrevi);
+        fo.delete(); //Eliminem el fitxer per si ja existia d'abans
+        fileOutput = new FileOutputStream(fo);
+        bo = new BufferedOutputStream(fileOutput);
+        byte b[] = new byte[(int) lbloc];
+        long lleva = 0;
+        while (lleva < lfic) {
+            int leido;
+            if (lfic - lleva > lbloc) {
+                leido = dis.read(b, 0, lbloc); //llegeix com al molt lbloc bytes, però pot ser que sigui altra quantitat menor
+            } else {//falten menys bytes que lbloc
+                leido = dis.read(b, 0, (int) (lfic - lleva)); //llegeix com a molt tants bytes com falten
+            }
+            bo.write(b, 0, leido);
+            lleva = lleva + leido; //per saber quants es porten llegits
+        }
+        bo.close();
+        //reanomena el fitxer
         File nufile = new File("rec_" + respostaUsuariRebut); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
         nufile.delete();
         fo.renameTo(nufile);
-        System.out.println("Fitxer descargat: "+respostaUsuariRebut);
+        System.out.println("Fitxer descargat: " + respostaUsuariRebut);
     }
 
 }
