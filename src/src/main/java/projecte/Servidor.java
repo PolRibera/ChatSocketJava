@@ -68,46 +68,18 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                     while (!sortirSesio){
                                         respostaUsuariRebut = dis.readUTF();
                                         switch(Integer.parseInt(respostaUsuariRebut)){
-                                            case 0:
-                                             if (esCorrectoDriver()) {
-                                                cn = obtenerCon();
-                                                ArrayList<String> llistatUsuaris = llistarUsuaris();
-                                                dos.writeUTF(""+llistatUsuaris.size()+"");
-                                                   for (int i = 0; i < llistatUsuaris.size(); i++) {
-                                                       dos.writeUTF(llistatUsuaris.get(i));
-                                                   }
-                                             }
-                                            break;
                                             case 1:
-                                                respostaUsuariRebut = dis.readUTF();
-                                                    if (respostaUsuariRebut.equals("1")) {
-                                                                    respostaUsuariRebut = dis.readUTF();
-                                                                    descaregarFitxer(respostaUsuariRebut,dos,dis);
-                                                    } else if (respostaUsuariRebut.equals("0")){
-                                                        if (respostaUsuariRebut.equals("0")) {
-                                                            String receptorUsuario = dis.readUTF(); // Lee el nombre de usuario del receptor
-                                                            String mensaje = dis.readUTF(); // Lee el mensaje a enviar
-                                                            Socket receptorSocket = usuariosConectados.get(receptorUsuario);
-
-                                                            if (receptorSocket != null) {
-                                                                try {
-                                                                    DataOutputStream dosReceptor = new DataOutputStream(receptorSocket.getOutputStream());
-                                                                    dosReceptor.writeUTF("Mensaje de " + idUsuari +" a "+receptorUsuario+ ": " + mensaje);
-                                                                    dos.writeUTF("Mensaje enviado con éxito");
-                                                                } catch (IOException e) {
-                                                                    e.printStackTrace();
-                                                                    dos.writeUTF("Error al enviar el mensaje al usuario receptor");
-                                                                }
-                                                            } else {
-                                                                dos.writeUTF("El usuario receptor no está conectado");
-                                                            }
-                                                        }
-                                                      break;
-                                                    }
-
-                                                    sk.close(); //tanquem la connexió
                                                 break;
                                             case 2:
+                                                break;
+                                            case 3:
+                                                break;
+                                            case 4:
+                                                break;
+                                            case 5:
+                                                break;
+                                            case 6:
+                                                dos.writeUTF("true");
                                                 sortirSesio=true;
                                                 break;
                                         }
