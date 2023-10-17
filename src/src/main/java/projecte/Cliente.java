@@ -18,7 +18,7 @@ public class Cliente {
         public static Scanner sc = new Scanner(System.in);
         
         
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         
         String[] pantallaInici = {
                     "",
@@ -27,6 +27,18 @@ public class Cliente {
                     "1.- [Sign in]                      ",
                     "2.- [Sign up]                      ",
                     "3.- [Exit]                         ",
+                    "",
+            };
+            String[] pantallaPrincipal = {
+                    "",
+                    "Benvingut a [nom usuari]           ",
+                    "",
+                    "1.- [Opcions Grup]                 ",
+                    "2.- [Opcions fitxers]              ",
+                    "3.- [Xat]                          ",
+                    "4.- [Configuració servidor]        ",
+                    "5.- [Configuració client]          ",
+                    "6.- [Sign out]                     ",
                     "",
             };
 
@@ -46,19 +58,7 @@ public class Cliente {
                     "",
                     "Fins un altre.",
                     "",
-            };
-
-            String[] pantallaPrincipal = {
-                    "",
-                    "Benvingut a [nom usuari]           ",
-                    "",
-                    "1.- [Opcions Grup]                 ",
-                    "2.- [Opcions fitxers]              ",
-                    "3.- [Xat]                          ",
-                    "4.- [Configuració servidor]        ",
-                    "5.- [Configuració client]          ",
-                    "6.- [Sign out]                     ",
-                    "",
+  
             };
 
             String[] opGrup = {
@@ -144,14 +144,34 @@ public class Cliente {
         dos.writeUTF(s1);
         switch (Integer.parseInt(s1)){
             case 1:
-                System.out.println("Introdueix nom d'usuari:");
-                String idUsuari = sc.next();
-                dos.writeUTF(idUsuari);
-                System.out.println("Introdueix contrasenya:");
-                String contrasenya = sc.next();
-                dos.writeUTF(contrasenya);
+                int con = 0;
+                gui(signIn, 5);
+                while(dis.readUTF().equals("false") || con <= 3){
+                    System.out.println("Introdueix nom d'usuari:");
+                    String idUsuari = sc.next();
+                    System.out.println("Introdueix contrasenya:");
+                    String contrasenya = sc.next();
+                    dos.writeUTF(idUsuari);
+                    dos.writeUTF(contrasenya);
+                    if (dis.readUTF().equals("false")) {
+                        System.out.println("La contrasenya o el usuari son incorrectes.");
+                    }
+                    
+                }
+                if (dis.readUTF().equals("true")) {
+                    System.out.println("Has iniciat sesió.");
+                    Thread.sleep(2000);
+                    gui(pantallaPrincipal, 12);
+                    s1= sc.next();
+                    switch(Integer.parseInt(s1)){
+                        
+                    
+                    
+                    }
+                }
                 break;
             case 2:
+                gui(signUp, 5);
                 System.out.println("Introdueix id d'usuari:");
                 String idUsuariC = sc.next();
                 dos.writeUTF(idUsuariC);
@@ -227,4 +247,3 @@ public class Cliente {
         System.out.println();
     }
 }
-
