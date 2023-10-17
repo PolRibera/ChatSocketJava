@@ -29,17 +29,6 @@ public class Cliente {
             "2.- [Sign up]                      ",
             "3.- [Exit]                         ",
             "",};
-        String[] pantallaPrincipal = {
-            "",
-            "Benvingut a [nom usuari]           ",
-            "",
-            "1.- [Opcions Grup]                 ",
-            "2.- [Opcions fitxers]              ",
-            "3.- [Xat]                          ",
-            "4.- [Configuració servidor]        ",
-            "5.- [Configuració client]          ",
-            "6.- [Sign out]                     ",
-            "",};
 
         String[] signIn = {
             "",
@@ -60,10 +49,9 @@ public class Cliente {
             "",
             "Opcions Grup                       ",
             "",
-            "1.- [Donar d’alta grup]          ",
-            "2.- [Donar de baixa grup]        ",
-            "3.- [Administrar grup]             ",
-            "4.- [Menu principal]               ",
+            "1.- [Donar d’alta grup]            ",
+            "2.- [Administrar grup]             ",
+            "3.- [Menu principal]               ",
             "",};
 
         String[] adminGrup = {
@@ -72,7 +60,8 @@ public class Cliente {
             "",
             "1.- [Afegir usuari]                ",
             "2.- [Esborrar usuari]              ",
-            "3.- [Llistar membres del grup]     ",
+            "3.- [Donar de baixa grup]          ",
+            "4.- [Llistar membres del grup]     ",
             "",};
 
         String[] opFitxers = {
@@ -127,7 +116,8 @@ public class Cliente {
         DataInputStream dis = new DataInputStream(sk.getInputStream());
         String RespuestaServidor;
         System.out.println();
-        gui(pantallaInici, 9);
+        gui(pantallaInici);
+        System.out.print("Introdueix una opció: ");
         String s1 = sc.next();
         boolean sortir = false;
         dos.writeUTF(s1);
@@ -136,11 +126,11 @@ public class Cliente {
                 case 1:
                     int con = 0;
                     String repServidor = "";
-
-                    gui(signIn, 5);
+                    String idUsuari = "";
+                    gui(signIn);
                     while (con <= 3) {
                         System.out.println("Introdueix nom d'usuari:");
-                        String idUsuari = sc.next();
+                         idUsuari = sc.next();
                         System.out.println("Introdueix contrasenya:");
                         String contrasenya = sc.next();
                         dos.writeUTF(idUsuari);
@@ -153,14 +143,82 @@ public class Cliente {
                             System.out.println("Has iniciat sesió.");
                             break;
                         }
+                        
                     }
+                    String[] pantallaPrincipal = {
+                                "",
+                                "Benvingut, " + idUsuari + "        ",
+                                "",
+                                "1.- [Opcions Grup]                 ",
+                                "2.- [Opcions fitxers]              ",
+                                "3.- [Xat]                          ",
+                                "4.- [Configuració servidor]        ",
+                                "5.- [Configuració client]          ",
+                                "6.- [Sign out]                     ",
+                                "",};
                     if (repServidor.equals("true")) {
                         Thread.sleep(2000);
-                        gui(pantallaPrincipal, 12);
+                        gui(pantallaPrincipal);
                         s1 = sc.next();
                         switch (Integer.parseInt(s1)) {
                             case 1:
-                                gui(opGrup,10 );
+                                gui(opGrup);
+                                s1 = sc.next();
+                                switch (Integer.parseInt(s1)) {
+                                    case 1:
+                                        break;
+                                    case 2:
+                                        gui(adminGrup);
+                                        System.out.print("Introdueix una opció: ");
+                                        s1 = sc.next();
+                                        switch (Integer.parseInt(s1)){
+                                            case 1:
+                                                break;
+                                            case 2:
+                                                break;
+                                            case 3:
+                                                break;    
+                                            case 4:
+                                                break;
+                                        }
+                                        break;
+                                    case 3:
+                                        break;
+                                }
+                                break;
+                            case 2:
+                                gui(opFitxers);
+                                System.out.print("Introdueix una opció: ");
+                                s1 = sc.next();
+                                switch (Integer.parseInt(s1)) {
+                                    case 1:
+                                        break;
+                                    case 2:
+                                        break;
+                                    case 3:
+                                        break;
+                                    case 4:
+                                        break;
+                                }
+                                break;
+                            case 3:
+                                gui(opXat);
+                                System.out.print("Introdueix una opció: ");
+                                s1 = sc.next();
+                                switch (Integer.parseInt(s1)) {
+                                    case 1:
+                                        break;
+                                    case 2:
+                                        break;
+                                    case 3:
+                                        break;
+                                    case 4:
+                                        break;
+                                }
+                                break;
+                            case 4:
+                                gui(confServidor);
+                                System.out.print("Introdueix una opció: ");
                                 s1 = sc.next();
                                 switch (Integer.parseInt(s1)) {
                                     case 1:
@@ -175,27 +233,40 @@ public class Cliente {
                                         break;
                                     case 6:
                                         break;
-
-                                
-                                
+                                    case 7:
+                                        break;
                                 }
                                 break;
-                            case 2:
-                                break;
-                            case 3:
-                                break;
-                            case 4:
-                                break;
                             case 5:
+                                gui(confClient);
+                                System.out.print("Introdueix una opció: ");
+                                s1 = sc.next();
+                                switch (Integer.parseInt(s1)) {
+                                    case 1:
+                                        break;
+                                    case 2:
+                                        break;
+                                    case 3:
+                                        break;
+                                    case 4:
+                                        break;
+                                    case 5:
+                                        break;
+                                    case 6:
+                                        break;
+                                    case 7:
+                                        break;    
+                                }
                                 break;
                             case 6:
+                                
                                 break;
 
                         }
-
+                        break;
                     }
                 case 2:
-                    gui(signUp, 5);
+                    gui(signUp);
                     System.out.println("Introdueix id d'usuari:");
                     String idUsuariC = sc.next();
                     dos.writeUTF(idUsuariC);
@@ -213,6 +284,7 @@ public class Cliente {
                     if (dis.readUTF().equals("true")) {
                         sortir = true;
                     }
+                    gui(exit);
 
                     break;
 
@@ -220,7 +292,8 @@ public class Cliente {
         }
     }
 
-    public static void gui(String[] contingut, int height) {
+    public static void gui(String[] contingut) {
+        int height = contingut.length + 2;
         int width = 40;
 
         char horizontalChar = '-';
