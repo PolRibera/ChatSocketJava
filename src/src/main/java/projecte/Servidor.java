@@ -33,7 +33,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         propertiesClient = new Properties();
         propertiesServer.load(new FileReader("src\\main\\java\\projecte\\configServer.properties"));
         propertiesClient.load(new FileReader("src\\main\\java\\projecte\\configClient.properties"));
-
+        System.out.println("Servidor ences");
         while (true) {
             try {
                 Socket sk = skk.accept(); //accepta una conexión

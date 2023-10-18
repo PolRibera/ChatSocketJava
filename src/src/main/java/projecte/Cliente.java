@@ -120,11 +120,11 @@ public class Cliente {
         String RespuestaServidor;
         System.out.println();
         gui(pantallaInici);
-        System.out.print("Introdueix una opció: ");
-        String s1 = sc.next();
         boolean sortir = false;
-        dos.writeUTF(s1);
         while (!sortir) {
+            System.out.print("Introdueix una opció: ");
+            String s1 = sc.next();
+            dos.writeUTF(s1);
             boolean signOut = false;
             switch (Integer.parseInt(s1)) {
                 case 1:
