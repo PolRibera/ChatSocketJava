@@ -30,8 +30,9 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         int PUERTO = 54322;
         ServerSocket skk = new ServerSocket(PUERTO);
         propertiesServer = new Properties();
-        propertiesServer.load(new FileReader("configServer.properties"));
-        propertiesClient.load(new FileReader("configClient.properties"));
+        propertiesClient = new Properties();
+        propertiesServer.load(new FileReader("src\\main\\java\\projecte\\configServer.properties"));
+        propertiesClient.load(new FileReader("src\\main\\java\\projecte\\configClient.properties"));
 
         while (true) {
             try {
