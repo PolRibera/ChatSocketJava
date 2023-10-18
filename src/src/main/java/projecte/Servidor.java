@@ -81,6 +81,8 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                             case 1:
                                                 respostaUsuariRebut = dis.readUTF();
                                                 String idgrupo;
+                                                boolean grups = true;
+                                                while(!grups){
                                                 switch (Integer.parseInt(respostaUsuariRebut)) {
                                                     case 1:
                                                         idgrupo = dis.readUTF();
@@ -93,36 +95,38 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                             respostaUsuariRebut = dis.readUTF();
                                                             String usuarinou;
                                                             boolean grup = false;
-                                                            while(!grup){
-                                                            switch (Integer.parseInt(respostaUsuariRebut)) {
-                                                                case 1:
-                                                                    usuarinou = dis.readUTF();
-                                                                    afegirUsuari(idgrupo, usuarinou, dos);
-                                                                    break;
-                                                                case 2:
-                                                                    usuarinou = dis.readUTF();
-                                                                    if (usuarinou.equals(idUsuari)) {
-                                                                        dos.writeUTF("admin");
-                                                                    } else {
-                                                                        esborrarUsuari(idgrupo, idUsuari, dos);
-                                                                    }
-                                                                    break;
-                                                                case 3:
-                                                                    borrarGrupo(idgrupo, idUsuari, dos);
-                                                                    break;
-                                                                case 4:
-                                                                    llistarUsuarisGrup(idgrupo, dos);
-                                                                    break;
-                                                                case 5:
-                                                                    dos.writeUTF("true");
-                                                                    grup = true;
-                                                                    break;
+                                                            while (!grup) {
+                                                                switch (Integer.parseInt(respostaUsuariRebut)) {
+                                                                    case 1:
+                                                                        usuarinou = dis.readUTF();
+                                                                        afegirUsuari(idgrupo, usuarinou, dos);
+                                                                        break;
+                                                                    case 2:
+                                                                        usuarinou = dis.readUTF();
+                                                                        if (usuarinou.equals(idUsuari)) {
+                                                                            dos.writeUTF("admin");
+                                                                        } else {
+                                                                            esborrarUsuari(idgrupo, idUsuari, dos);
+                                                                        }
+                                                                        break;
+                                                                    case 3:
+                                                                        borrarGrupo(idgrupo, idUsuari, dos);
+                                                                        break;
+                                                                    case 4:
+                                                                        llistarUsuarisGrup(idgrupo, dos);
+                                                                        break;
+                                                                    case 5:
+                                                                        dos.writeUTF("true");
+                                                                        grup = true;
+                                                                        break;
+                                                                }
                                                             }
-                                                            }
-                                                        } else {
-
                                                         }
+                                                    case 3:
+                                                        dos.writeUTF("true");
+                                                        grups = true;
                                                         break;
+                                                }
                                                 }
                                                 break;
                                             case 2:
@@ -473,8 +477,6 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         }
         return null;
     }
-
-
 
     public static String cifrar(String input) {
         try {
