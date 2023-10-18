@@ -23,9 +23,15 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
     private static String USER = "root";
     private static String PASSWORD = "admin";
 
+    public static Properties propertiesServer;
+    public static Properties propertiesClient;
+
     public static void main(String[] args) throws IOException { //per provar el receptor de fitxers
         int PUERTO = 54322;
         ServerSocket skk = new ServerSocket(PUERTO);
+        propertiesServer = new Properties();
+        propertiesServer.load(new FileReader("configServer.properties"));
+        propertiesClient.load(new FileReader("configClient.properties"));
 
         while (true) {
             try {
@@ -73,6 +79,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                         respostaUsuariRebut = dis.readUTF();
                                         switch (Integer.parseInt(respostaUsuariRebut)) {
                                             case 1:
+                                                boolean enrrera = false;
                                                 respostaUsuariRebut = dis.readUTF();
                                                 switch (Integer.parseInt(respostaUsuariRebut)) {
                                                     case 1:
@@ -83,6 +90,8 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                         idgrupo = dis.readUTF();
                                                         borrarGrupo(idgrupo, idUsuari, dos);
                                                         break;
+                                                    case 3:
+
                                                 }
                                                 break;
                                             case 2:
@@ -90,8 +99,84 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                             case 3:
                                                 break;
                                             case 4:
+                                                boolean sortirConfigServer = false;
+                                                while (!sortirConfigServer) {
+                                                    respostaUsuariRebut = dis.readUTF();
+                                                    switch (Integer.parseInt(respostaUsuariRebut)) {
+                                                        case 1:
+                                                            dos.writeUTF((String) propertiesServer.get("maxima_mida"));
+                                                            dos.writeUTF((String) propertiesServer.get("maxima_conexions"));
+                                                            dos.writeUTF((String) propertiesServer.get("contrasenya_base_dades"));
+                                                            dos.writeUTF((String) propertiesServer.get("client_admin"));
+                                                            dos.writeUTF((String) propertiesServer.get("nom_servidor"));
+                                                            dos.writeUTF((String) propertiesServer.get("ruta_desa_fitxers"));
+                                                            break;
+                                                        case 2:
+                                                            propertiesServer.setProperty("maxima_mida", dis.readUTF());
+                                                            System.out.println("S’ha cambiat la mida maxima dels fitxers ha enviar.");
+                                                            break;
+                                                        case 3:
+                                                            propertiesServer.setProperty("maxima_conexions", dis.readUTF());
+                                                            System.out.println("S’ha cambiat les conexions maximas al servidor.");
+                                                            break;
+                                                        case 4:
+                                                            propertiesServer.setProperty("contrasenya_base_dades", dis.readUTF());
+                                                            System.out.println("S’ha cambiat la contrasenya de la base de dades.");
+                                                            break;
+                                                        case 5:
+                                                            propertiesServer.setProperty("client_admin", dis.readUTF());
+                                                            System.out.println("S’ha introduit un nou admin.");
+                                                            break;
+                                                        case 6:
+                                                            propertiesServer.setProperty("nom_servidor", dis.readUTF());
+                                                            System.out.println("S’ha cambiat el nom del servidor.");
+                                                            break;
+                                                        case 7:
+                                                            propertiesServer.setProperty("ruta_desa_fitxers", dis.readUTF());
+                                                            System.out.println("S’ha cambiat la ruta on es guarden el fitxers.");
+                                                            break;
+                                                        case 8:
+                                                            dos.writeUTF("true");
+                                                            sortirConfigServer = true;
+                                                            break;
+
+                                                    }
+                                                }
                                                 break;
                                             case 5:
+                                                boolean sortirConfigClient = false;
+                                                while (!sortirConfigClient) {
+                                                    respostaUsuariRebut = dis.readUTF();
+                                                    switch (Integer.parseInt(respostaUsuariRebut)) {
+                                                        case 1:
+                                                            dos.writeUTF((String) propertiesClient.get("nom_client"));
+                                                            dos.writeUTF((String) propertiesClient.get("tamay_maxim"));
+                                                            dos.writeUTF((String) propertiesClient.get("ip_default"));
+                                                            dos.writeUTF((String) propertiesClient.get("port_default"));
+                                                            break;
+                                                        case 2:
+                                                            propertiesClient.setProperty("nom_client", dis.readUTF());
+                                                            System.out.println("S’ha cambiat el nom del client.");
+                                                            break;
+                                                        case 3:
+                                                            propertiesClient.setProperty("tamay_maxim", dis.readUTF());
+                                                            System.out.println("S’ha cambiat el tamay maxim de rebre/enviar del client.");
+                                                            break;
+                                                        case 4:
+                                                            propertiesClient.setProperty("ip_default", dis.readUTF());
+                                                            System.out.println("S’ha cambiat la ip.");
+                                                            break;
+                                                        case 5:
+                                                            propertiesClient.setProperty("port_default", dis.readUTF());
+                                                            System.out.println("S’ha cambiat el port.");
+                                                            break;
+                                                        case 6:
+                                                            dos.writeUTF("true");
+                                                            sortirConfigServer = true;
+                                                            break;
+
+                                                    }
+                                                }
                                                 break;
                                             case 6:
                                                 dos.writeUTF("true");
@@ -101,6 +186,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                     }
                                 } else {
                                     dos.writeUTF("false");
+
                                 }
                             }
                             ;

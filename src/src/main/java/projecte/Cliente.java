@@ -11,9 +11,9 @@ import java.net.Socket;
 import java.util.Scanner;
 
 /**
- * a
+ * 
  *
- * @author Ricard Sierra, Pol Ribera, Alex Montoya
+ * @author Ricard Sierra Carasapiens, Pol Ribera Sam Sulek , Alex Montoya Comepollas
  */
 public class Cliente {
 
@@ -88,24 +88,26 @@ public class Cliente {
             "",
             "Configurar servidor                ",
             "",
-            "1.- [Tamany maxim fitxer]          ",
-            "2.- [Maximas conexions simultaneas]",
-            "3.- [Nova contrasenya BDD]         ",
-            "4.- [Client administrador]         ",
-            "5.- [Cambiar nom del servidor]     ",
-            "6.- [Ruta guardar fitxers]         ",
-            "7.- [Menu principal]               ",
+            "1.- [Mostra configuracio actual]   ",
+            "2.- [Tamany maxim fitxer]          ",
+            "3.- [Maximas conexions simultaneas]",
+            "4.- [Nova contrasenya BDD]         ",
+            "5.- [Client administrador]         ",
+            "6.- [Cambiar nom del servidor]     ",
+            "7.- [Ruta guardar fitxers]         ",
+            "8.- [Menu principal]               ",
             "",};
 
         String[] confClient = {
             "",
             "Configurar servidor                ",
             "",
-            "1.- [Cambiar nom client]           ",
-            "2.- [Tamany maxim que pot rebre]   ",
-            "3.- [Cambiar ip servidor]          ",
-            "4.- [Port per defecta servidor]    ",
-            "7.- [Menu principal]               ",
+            "1.- [Mostra configuracio actual]   ",
+            "2.- [Cambiar nom client]           ",
+            "3.- [Tamany maxim que pot rebre]   ",
+            "4.- [Cambiar ip servidor]          ",
+            "5.- [Port per defecta servidor]    ",
+            "6.- [Menu principal]               ",
             "",};
 
         System.out.println("Inicia cliente");
@@ -122,6 +124,7 @@ public class Cliente {
         boolean sortir = false;
         dos.writeUTF(s1);
         while (!sortir) {
+            boolean signOut = false;
             switch (Integer.parseInt(s1)) {
                 case 1:
                     int con = 0;
@@ -130,32 +133,35 @@ public class Cliente {
                     gui(signIn);
                     while (con <= 3) {
                         System.out.println("Introdueix nom d'usuari:");
-                         idUsuari = sc.next();
+                        idUsuari = sc.next();
+                        dos.writeUTF(idUsuari);
                         System.out.println("Introdueix contrasenya:");
                         String contrasenya = sc.next();
-                        dos.writeUTF(idUsuari);
                         dos.writeUTF(contrasenya);
                         repServidor = dis.readUTF();
                         if (repServidor.equals("false")) {
                             System.out.println("La contrasenya o el usuari son incorrectes.");
                             con++;
+                            if (con <= 3) {
+                                sortir = true;
+                            }
                         } else if (repServidor.equals("true")) {
                             System.out.println("Has iniciat sesió.");
                             break;
                         }
-                        
+
                     }
                     String[] pantallaPrincipal = {
-                                "",
-                                "Benvingut, " + idUsuari + "        ",
-                                "",
-                                "1.- [Opcions Grup]                 ",
-                                "2.- [Opcions fitxers]              ",
-                                "3.- [Xat]                          ",
-                                "4.- [Configuració servidor]        ",
-                                "5.- [Configuració client]          ",
-                                "6.- [Sign out]                     ",
-                                "",};
+                        "",
+                        "Benvingut, " + idUsuari + "        ",
+                        "",
+                        "1.- [Opcions Grup]                 ",
+                        "2.- [Opcions fitxers]              ",
+                        "3.- [Xat]                          ",
+                        "4.- [Configuració servidor]        ",
+                        "5.- [Configuració client]          ",
+                        "6.- [Sign out]                     ",
+                        "",};
                     if (repServidor.equals("true")) {
                         Thread.sleep(500);
                         gui(pantallaPrincipal);
@@ -171,13 +177,13 @@ public class Cliente {
                                         gui(adminGrup);
                                         System.out.print("Introdueix una opció: ");
                                         s1 = sc.next();
-                                        switch (Integer.parseInt(s1)){
+                                        switch (Integer.parseInt(s1)) {
                                             case 1:
                                                 break;
                                             case 2:
                                                 break;
                                             case 3:
-                                                break;    
+                                                break;
                                             case 4:
                                                 break;
                                         }
@@ -220,21 +226,54 @@ public class Cliente {
                                 gui(confServidor);
                                 System.out.print("Introdueix una opció: ");
                                 s1 = sc.next();
-                                switch (Integer.parseInt(s1)) {
-                                    case 1:
-                                        break;
-                                    case 2:
-                                        break;
-                                    case 3:
-                                        break;
-                                    case 4:
-                                        break;
-                                    case 5:
-                                        break;
-                                    case 6:
-                                        break;
-                                    case 7:
-                                        break;
+                                boolean sortirConfigServer = false;
+                                while (!sortirConfigServer) {
+                                    switch (Integer.parseInt(s1)) {
+                                        case 1:
+                                            System.out.println(dis.readUTF());
+                                            System.out.println(dis.readUTF());
+                                            System.out.println(dis.readUTF());
+                                            System.out.println(dis.readUTF());
+                                            System.out.println(dis.readUTF());
+                                            System.out.println(dis.readUTF());
+                                            break;
+                                        case 2:
+                                            System.out.print("Introdueix la mida maxima del fitxer: ");
+                                            String mida = sc.next();
+                                            dos.writeUTF(mida);
+                                            break;
+                                        case 3:
+                                            System.out.print("Introdueix les conexions maximas al servidor: ");
+                                            String maxCon = sc.next();
+                                            dos.writeUTF(maxCon);
+                                            break;
+                                        case 4:
+                                            System.out.print("Introdueix la nova contrasenya de la base de dades: ");
+                                            String contraBase = sc.next();
+                                            dos.writeUTF(contraBase);
+                                            break;
+                                        case 5:
+                                            System.out.print("Introdueix el nom del nou Admin: ");
+                                            String clientAdmin = sc.next();
+                                            dos.writeUTF(clientAdmin);
+                                            break;
+                                        case 6:
+                                            System.out.print("Introdueix el nou nom del servidor: ");
+                                            String nomServer = sc.next();
+                                            dos.writeUTF(nomServer);
+                                            break;
+                                        case 7:
+                                            System.out.print("Introdueix la nova ruta on es guarden els fitxers: ");
+                                            String rutaFitxers = sc.next();
+                                            dos.writeUTF(rutaFitxers);
+                                            break;
+                                        case 8:
+                                            if (dis.readUTF().equals("true")) {
+                                                sortirConfigServer = true;
+                                            }
+                                            break;
+
+                                    }
                                 }
                                 break;
                             case 5:
@@ -243,27 +282,42 @@ public class Cliente {
                                 s1 = sc.next();
                                 switch (Integer.parseInt(s1)) {
                                     case 1:
+                                        System.out.println(dis.readUTF());
+                                        System.out.println(dis.readUTF());
+                                        System.out.println(dis.readUTF());
+                                        System.out.println(dis.readUTF());
                                         break;
                                     case 2:
+                                        System.out.print("Introdueix el nou nom del client: ");
+                                        String nomClient = sc.next();
+                                        dos.writeUTF(nomClient);
                                         break;
                                     case 3:
+                                        System.out.print("Introdueix la mida maxima del fitxer per enviar/rebre: ");
+                                        String mida = sc.next();
+                                        dos.writeUTF(mida);
                                         break;
                                     case 4:
+                                        System.out.print("Introdueix la nova ip: ");
+                                        String ip = sc.next();
+                                        dos.writeUTF(ip);
                                         break;
                                     case 5:
+                                        System.out.print("Introdueix el nou port: ");
+                                        String port = sc.next();
+                                        dos.writeUTF(port);
                                         break;
                                     case 6:
                                         break;
-                                    case 7:
-                                        break;    
                                 }
                                 break;
                             case 6:
-                                
+                                if (dis.readUTF().equals("true")) {
+                                    signOut = true;
+                                }
                                 break;
 
                         }
-                        break;
                     }
                 case 2:
                     gui(signUp);
