@@ -79,19 +79,50 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                         respostaUsuariRebut = dis.readUTF();
                                         switch (Integer.parseInt(respostaUsuariRebut)) {
                                             case 1:
-                                                boolean enrrera = false;
                                                 respostaUsuariRebut = dis.readUTF();
+                                                String idgrupo;
                                                 switch (Integer.parseInt(respostaUsuariRebut)) {
                                                     case 1:
-                                                        String idgrupo = dis.readUTF();
+                                                        idgrupo = dis.readUTF();
                                                         crearGrupo(idgrupo, idUsuari);
+                                                        afegirUsuari(idgrupo, idUsuari, dos);
                                                         break;
                                                     case 2:
                                                         idgrupo = dis.readUTF();
-                                                        borrarGrupo(idgrupo, idUsuari, dos);
-                                                        break;
-                                                    case 3:
+                                                        if (comprobargrupo(idgrupo, idUsuari, dos)) {
+                                                            respostaUsuariRebut = dis.readUTF();
+                                                            String usuarinou;
+                                                            boolean grup = false;
+                                                            while(!grup){
+                                                            switch (Integer.parseInt(respostaUsuariRebut)) {
+                                                                case 1:
+                                                                    usuarinou = dis.readUTF();
+                                                                    afegirUsuari(idgrupo, usuarinou, dos);
+                                                                    break;
+                                                                case 2:
+                                                                    usuarinou = dis.readUTF();
+                                                                    if (usuarinou.equals(idUsuari)) {
+                                                                        dos.writeUTF("admin");
+                                                                    } else {
+                                                                        esborrarUsuari(idgrupo, idUsuari, dos);
+                                                                    }
+                                                                    break;
+                                                                case 3:
+                                                                    borrarGrupo(idgrupo, idUsuari, dos);
+                                                                    break;
+                                                                case 4:
+                                                                    llistarUsuarisGrup(idgrupo, dos);
+                                                                    break;
+                                                                case 5:
+                                                                    dos.writeUTF("true");
+                                                                    grup = true;
+                                                                    break;
+                                                            }
+                                                            }
+                                                        } else {
 
+                                                        }
+                                                        break;
                                                 }
                                                 break;
                                             case 2:
@@ -210,6 +241,8 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ConecInicialServidorString.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -322,29 +355,92 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         }
     }
 
-    private static void afegirUsuari(String idgrupo, String idusuario) {
+    public static boolean comprobargrupo(String idgrupo, String idusuario, DataOutputStream dos) throws SQLException, IOException {
         try {
-            PreparedStatement st = cn.prepareStatement("INSERT INTO grupo_usuario(idgrupo, idusuario) VALUES (?, ?,);");
-            st.setString(1, idgrupo);
-            st.setString(2, idusuario);
-            st.executeUpdate();
+            PreparedStatement st1 = cn.prepareStatement("SELECT idgrupo FROM grupo WHERE idgrupo = ?;");
+            st1.setString(1, idgrupo);
+            ResultSet rs1 = st1.executeQuery();
+            if (rs1.next()) {
+                PreparedStatement st2 = cn.prepareStatement("SELECT idadmin FROM grupo WHERE idadmin = ? AND idgrupo = ?;");
+                st2.setString(1, idusuario);
+                st2.setString(2, idgrupo);
+                ResultSet rs2 = st2.executeQuery();
+                if (rs2.next()) {
+                    dos.writeUTF("correcte");
+                    return true;
+                } else {
+                    dos.writeUTF("admin");
+                    return false;
+                }
+            } else {
+                dos.writeUTF("grupo");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    private static void afegirUsuari(String idgrupo, String idusuario, DataOutputStream dos) throws IOException {
+        try {
+            PreparedStatement st1 = cn.prepareStatement("SELECT idusuario FROM usuario WHERE idusuario = ?;");
+            st1.setString(1, idusuario);
+            ResultSet rs1 = st1.executeQuery();
+            if (rs1.next()) {
+                PreparedStatement st2 = cn.prepareStatement("SELECT idgrupo FROM grupo_usuario WHERE idusuario = ? AND idgrupo = ?;");
+                st2.setString(1, idusuario);
+                st2.setString(2, idgrupo);
+                ResultSet rs2 = st2.executeQuery();
+                if (rs2.next()) {
+                    dos.writeUTF("relacio");
+                } else {
+                    PreparedStatement st3 = cn.prepareStatement("INSERT INTO grupo_usuario(idgrupo, idusuario) VALUES (?, ?);");
+                    st3.setString(1, idgrupo);
+                    st3.setString(2, idusuario);
+                    st3.executeUpdate();
+                    dos.writeUTF("correcte");
+                }
+
+            } else {
+                dos.writeUTF("usuari");
+            }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private static void esborrarUsuari(String idgrupo, String idusuario) {
+    private static void esborrarUsuari(String idgrupo, String idusuario, DataOutputStream dos) throws IOException {
         try {
-            PreparedStatement st = cn.prepareStatement("DELETE FROM grupo_usuario WHERE idgrupo = ? AND idusuario = ?");
-            st.setString(1, idgrupo);
-            st.setString(2, idusuario);
-            st.executeUpdate();
+            PreparedStatement st1 = cn.prepareStatement("SELECT idusuario FROM usuario WHERE idusuario = ?;");
+            st1.setString(1, idusuario);
+            ResultSet rs1 = st1.executeQuery();
+            if (rs1.next()) {
+                PreparedStatement st2 = cn.prepareStatement("SELECT idgrupo FROM grupo_usuario WHERE idusuario = ? AND idgrupo = ?;");
+                st2.setString(1, idusuario);
+                st2.setString(2, idgrupo);
+                ResultSet rs2 = st2.executeQuery();
+                System.out.println(st2);
+                if (rs2.next()) {
+                    PreparedStatement st3 = cn.prepareStatement("DELETE FROM grupo_usuario WHERE idgrupo = ? AND idusuario = ?");
+                    st3.setString(1, idgrupo);
+                    st3.setString(2, idusuario);
+                    st3.executeUpdate();
+                    dos.writeUTF("correcte");
+                } else {
+                    dos.writeUTF("relacio");
+                }
+            } else {
+                dos.writeUTF("usuari");
+            }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private static ArrayList<String> llistarUsuarisGrup(String idgrupo, String idusuario) {
+    private static void llistarUsuarisGrup(String idgrupo, DataOutputStream dos) throws IOException {
         ArrayList<String> membres = new ArrayList<>();
         try {
             PreparedStatement st = cn.prepareStatement("SELECT idusuario FROM grupo_usuario WHERE idgrupo = ?;");
@@ -353,10 +449,13 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             while (rs.next()) {
                 membres.add(rs.getString("idusuario"));
             }
+            dos.writeUTF(Integer.toString(membres.size()));
+            for (int i = 0; i < membres.size(); i++) {
+                dos.writeUTF(membres.get(i));
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return membres;
     }
 
     private static ArrayList<String> llistarGrups(String idusuari) throws IOException {
@@ -375,43 +474,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         return null;
     }
 
-    public static ArrayList<String> gui(String[] contingut, int height) {
-        int width = 40;
 
-        char horizontalChar = '-';
-        char verticalChar = '|';
-
-        ArrayList<String> guiLines = new ArrayList<>();
-
-        StringBuilder horizontalLine = new StringBuilder();
-        for (int i = 0; i < width; i++) {
-            horizontalLine.append(horizontalChar);
-        }
-        guiLines.add(horizontalLine.toString());
-
-        for (int i = 0; i < height - 2; i++) {
-            StringBuilder line = new StringBuilder();
-            line.append(verticalChar);
-            if (i < contingut.length) {
-                int contentLength = contingut[i].length();
-                int padding = (width - 2 - contentLength) / 2;
-                for (int j = 0; j < padding; j++) {
-                    line.append(" ");
-                }
-                line.append(contingut[i]);
-                for (int j = padding + contentLength; j < width - 2; j++) {
-                    line.append(" ");
-                }
-            }
-            line.append(verticalChar);
-            guiLines.add(line.toString());
-        }
-        guiLines.add(horizontalLine.toString());
-        ArrayList<String> guiArray = new ArrayList<>();
-        guiArray = guiLines;
-
-        return guiArray;
-    }
 
     public static String cifrar(String input) {
         try {

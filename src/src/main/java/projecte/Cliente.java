@@ -11,9 +11,10 @@ import java.net.Socket;
 import java.util.Scanner;
 
 /**
- * 
  *
- * @author Ricard Sierra Carasapiens, Pol Ribera Sam Sulek , Alex Montoya Comepollas
+ *
+ * @author Ricard Sierra Carasapiens, Pol Ribera Sam Sulek , Alex Montoya
+ * Comepollas
  */
 public class Cliente {
 
@@ -170,22 +171,79 @@ public class Cliente {
                             case 1:
                                 gui(opGrup);
                                 s1 = sc.next();
+                                dos.writeUTF(s1);
+                                String idgrupo;
                                 switch (Integer.parseInt(s1)) {
                                     case 1:
+                                        System.out.println("Nombre del grupo: ");
+                                        idgrupo = sc.next();
+                                        dos.writeUTF(idgrupo);
+                                        System.out.println("Grupo creado correctamente");
                                         break;
                                     case 2:
-                                        gui(adminGrup);
-                                        System.out.print("Introdueix una opció: ");
-                                        s1 = sc.next();
-                                        switch (Integer.parseInt(s1)) {
-                                            case 1:
-                                                break;
-                                            case 2:
-                                                break;
-                                            case 3:
-                                                break;
-                                            case 4:
-                                                break;
+                                        System.out.println("Nombre del grupo: ");
+                                        idgrupo = sc.next();
+                                        dos.writeUTF(idgrupo);
+                                        String resposta = dis.readUTF();
+                                        if (resposta.equals("correcte")) {
+                                            gui(adminGrup);
+                                            s1 = sc.next();
+                                            dos.writeUTF(s1);
+                                            boolean grup = false;
+                                            while (!grup) {
+                                                switch (Integer.parseInt(s1)) {
+
+                                                    case 1:
+                                                        System.out.println("Nom d'usuari: ");
+                                                        s1 = sc.next();
+                                                        dos.writeUTF(s1);
+                                                        resposta = dis.readUTF();
+                                                        if (resposta.equals("correcte")) {
+                                                            System.out.println("Usuari afegit");
+                                                        } else if (resposta.equals("relacio")) {
+                                                            System.out.println("El usuari ya pertany a aquest grup");
+                                                        } else if (resposta.equals("usuari")) {
+                                                            System.out.println("El usuari no existeix");
+                                                        }
+                                                        break;
+                                                    case 2:
+                                                        System.out.println("Nom d'usuari: ");
+                                                        s1 = sc.next();
+                                                        dos.writeUTF(s1);
+                                                        resposta = dis.readUTF();
+                                                        if (resposta.equals("correcte")) {
+                                                            System.out.println("Usuari esborrat");
+                                                        } else if (resposta.equals("relacio")) {
+                                                            System.out.println("El usuari no pertany a aquest grup");
+                                                        } else if (resposta.equals("usuari")) {
+                                                            System.out.println("El usuari no existeix");
+                                                        } else if (resposta.equals("admin")) {
+                                                            System.out.println("No pots eliminar el teu usuari");
+                                                        }
+                                                        break;
+                                                    case 3:
+                                                        System.out.println("El grup ha sigut esborrat");
+                                                        break;
+                                                    case 4:
+                                                        int contador = Integer.parseInt(dis.readUTF());
+                                                        String usuario;
+                                                        System.out.println("Usuaris del grup " + idgrupo + ":\n");
+                                                        for (int i = 0; i < contador; i++) {
+                                                            usuario = dis.readUTF();
+                                                            System.out.println(usuario);
+                                                        }
+                                                        break;
+                                                    case 5:
+                                                        if (dis.readUTF().equals("true")) {
+                                                            grup = true;
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                        } else if (resposta.equals("admin")) {
+                                            System.out.println("No eres el admin de este grupo");
+                                        } else if (resposta.equals("grupo")) {
+                                            System.out.println("El grupo no existe");
                                         }
                                         break;
                                     case 3:
