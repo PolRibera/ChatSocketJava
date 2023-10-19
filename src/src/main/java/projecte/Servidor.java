@@ -80,54 +80,59 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                         respostaUsuariRebut = dis.readUTF();
                                         switch (Integer.parseInt(respostaUsuariRebut)) {
                                             case 1:
-                                                respostaUsuariRebut = dis.readUTF();
                                                 String idgrupo;
-                                                boolean grups = true;
-                                                while(!grups){
-                                                switch (Integer.parseInt(respostaUsuariRebut)) {
-                                                    case 1:
-                                                        idgrupo = dis.readUTF();
-                                                        crearGrupo(idgrupo, idUsuari);
-                                                        afegirUsuari(idgrupo, idUsuari, dos);
-                                                        break;
-                                                    case 2:
-                                                        idgrupo = dis.readUTF();
-                                                        if (comprobargrupo(idgrupo, idUsuari, dos)) {
-                                                            respostaUsuariRebut = dis.readUTF();
-                                                            String usuarinou;
-                                                            boolean grup = false;
-                                                            while (!grup) {
-                                                                switch (Integer.parseInt(respostaUsuariRebut)) {
-                                                                    case 1:
-                                                                        usuarinou = dis.readUTF();
-                                                                        afegirUsuari(idgrupo, usuarinou, dos);
-                                                                        break;
-                                                                    case 2:
-                                                                        usuarinou = dis.readUTF();
-                                                                        if (usuarinou.equals(idUsuari)) {
-                                                                            dos.writeUTF("admin");
-                                                                        } else {
-                                                                            esborrarUsuari(idgrupo, idUsuari, dos);
-                                                                        }
-                                                                        break;
-                                                                    case 3:
-                                                                        borrarGrupo(idgrupo, idUsuari, dos);
-                                                                        break;
-                                                                    case 4:
-                                                                        llistarUsuarisGrup(idgrupo, dos);
-                                                                        break;
-                                                                    case 5:
-                                                                        dos.writeUTF("true");
-                                                                        grup = true;
-                                                                        break;
+                                                boolean grupo = false;
+                                                while (!grupo) {
+                                                    System.out.println("grupo");
+                                                    respostaUsuariRebut = dis.readUTF();
+                                                    switch (Integer.parseInt(respostaUsuariRebut)) {
+                                                        case 1:
+                                                            idgrupo = dis.readUTF();
+                                                            crearGrupo(idgrupo, idUsuari, dos);
+                                                            afegirUsuari(idgrupo, idUsuari, dos);
+                                                            break;
+                                                        case 2:
+                                                            idgrupo = dis.readUTF();
+                                                            if (comprobargrupo(idgrupo, idUsuari, dos)) {
+                                                                String usuarinou;
+                                                                boolean adgrup = false;
+                                                                while (!adgrup) {
+                                                                    System.out.println("adgrup");
+                                                                    respostaUsuariRebut = dis.readUTF();
+                                                                    switch (Integer.parseInt(respostaUsuariRebut)) {
+                                                                        case 1:
+                                                                            usuarinou = dis.readUTF();
+                                                                            afegirUsuari(idgrupo, usuarinou, dos);
+                                                                            break;
+                                                                        case 2:
+                                                                            usuarinou = dis.readUTF();
+                                                                            if (usuarinou.equals(idUsuari)) {
+                                                                                dos.writeUTF("admin");
+                                                                            } else {
+                                                                                esborrarUsuari(idgrupo, idUsuari, dos);
+                                                                            }
+                                                                            break;
+                                                                        case 3:
+                                                                            borrarGrupo(idgrupo, idUsuari, dos);
+                                                                            break;
+                                                                        case 4:
+                                                                            llistarUsuarisGrup(idgrupo, dos);
+                                                                            break;
+                                                                        case 5:
+                                                                            dos.writeUTF("true");
+                                                                            adgrup = true;
+                                                                            break;
+                                                                    }
                                                                 }
+                                                            } else {
+                                                                break;
                                                             }
-                                                        }
-                                                    case 3:
-                                                        dos.writeUTF("true");
-                                                        grups = true;
-                                                        break;
-                                                }
+                                                            break;
+                                                        case 3:
+                                                            dos.writeUTF("true");
+                                                            grupo = true;
+                                                            break;
+                                                    }
                                                 }
                                                 break;
                                             case 2:
@@ -323,12 +328,20 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         return null;
     }
 
-    private static void crearGrupo(String idgrupo, String idusuario) {
+    private static void crearGrupo(String idgrupo, String idusuario, DataOutputStream dos) throws SQLException, IOException {
         try {
-            PreparedStatement st = cn.prepareStatement("INSERT INTO grupo(idgrupo, idadmin) VALUES (?, ?);");
-            st.setString(1, idgrupo);
-            st.setString(2, idusuario);
-            st.executeUpdate();
+            PreparedStatement st1 = cn.prepareStatement("SELECT idgrupo FROM grupo WHERE idgrupo = ?;");
+            st1.setString(1, idgrupo);
+            ResultSet rs1 = st1.executeQuery();
+            if (!rs1.next()) {
+                PreparedStatement st2 = cn.prepareStatement("INSERT INTO grupo(idgrupo, idadmin) VALUES (?, ?);");
+                st2.setString(1, idgrupo);
+                st2.setString(2, idusuario);
+                st2.executeUpdate();
+                dos.writeUTF("correcte");
+            }else{
+                dos.writeUTF("grupo");
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
