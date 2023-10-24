@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 import java.util.logging.*;
-import static projecte.baseDades.obtenerCon;
 
 /**
  *
@@ -281,9 +280,9 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                             break;
                     }
                 }
+            }  catch (SQLException ex) {
+                Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
-                Logger.getLogger(ConecInicialServidorString.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
                 Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
