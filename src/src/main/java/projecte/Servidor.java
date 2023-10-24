@@ -146,8 +146,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                             descaregarFitxer(sk, dis, sk.getInputStream()); // Utiliza tu función descaregarFitxer
                                                             // Realiza alguna lógica adicional si es necesario con el archivo recibido
                                                             break;
-                                                        case 2: // Leer archivo (cliente envía solicitud)
-                                                            // Utiliza tu función listarFicheros
+                                                        case 2: 
                                                             break;
                                                         case 3: // Descargar archivo (cliente envía solicitud)
                                                             String directorioDescarga = "..\\fitxersServer";

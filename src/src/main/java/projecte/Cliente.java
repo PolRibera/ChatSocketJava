@@ -79,7 +79,7 @@ public class Cliente {
             "Opcions fitxers                    ",
             "",
             "1.- [Enviar fitxer al servidor]    ",
-            "2.- [Llegir fitxer]                ",
+            "2.- [Enviar fixter a un client]    ",
             "3.- [Descarregar fitxer]           ",
             "4.- [Menu principal]               ",
             "",};
@@ -289,14 +289,7 @@ public class Cliente {
                                             enviaEnBlocs(nomFitxer, sk, dos, sk.getOutputStream());
                                             break;
                                         case 2:
-                                            System.out.println("Introdueix el nom del fitxer a llegir:");
-                                            String nomFitxerLlegir = sc.next();
-                                            FileInputStream fis = new FileInputStream(nomFitxerLlegir);
-                                            int content;
-                                            while ((content = fis.read()) != -1) {
-                                                System.out.print((char) content);
-                                            }
-                                            fis.close();
+                                            System.out.println("Opció en desenvolupament...");
                                             break;
                                         case 3:
                                             String directorioDescarga = dis.readUTF();
