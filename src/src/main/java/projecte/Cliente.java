@@ -4,9 +4,16 @@
  */
 package projecte;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -78,12 +85,11 @@ public class Cliente {
 
         String[] opXat = {
             "",
-            "Xat                                ",
+            "Opcions Xat                        ",
             "",
-            "1.- [Enviar missatge]              ",
-            "2.- [Llegir missatge]              ",
-            "3.- [Llistar usuaris]              ",
-            "4.- [Menu principal]               ",
+            "1.- [Xat]                          ",
+            "2.- [Llistar usuaris]              ",
+            "3.- [Menu principal]               ",
             "",};
 
         String[] confServidor = {
@@ -149,6 +155,7 @@ public class Cliente {
                             }
                         } else if (repServidor.equals("true")) {
                             System.out.println("Has iniciat sesió.");
+
                             break;
                         }
 
@@ -159,7 +166,7 @@ public class Cliente {
                         "",
                         "1.- [Opcions Grup]                 ",
                         "2.- [Opcions fitxers]              ",
-                        "3.- [Xat]                          ",
+                        "3.- [Opcions xat]                  ",
                         "4.- [Configuració servidor]        ",
                         "5.- [Configuració client]          ",
                         "6.- [Sign out]                     ",
@@ -184,8 +191,8 @@ public class Cliente {
                                             dos.writeUTF(idgrupo);
                                             String respuestaCrear = dis.readUTF();
                                             if (respuestaCrear.equals("correcte")) {
-                                               System.out.println("Grupo creado correctamente"); 
-                                            }else if(respuestaCrear.equals("grupo")){
+                                                System.out.println("Grupo creado correctamente");
+                                            } else if (respuestaCrear.equals("grupo")) {
                                                 System.out.println("El grupo ya existe");
                                             }
                                             String respuestacrear2 = dis.readUTF();
@@ -256,39 +263,77 @@ public class Cliente {
                                             }
                                             break;
                                         case 3:
-                                            grupo = true;
+                                            if (dis.readUTF().equals("true")) {
+                                                grupo = true;
+                                            }
+
                                             break;
                                     }
                                 }
                                 break;
                             case 2:
-                                gui(opFitxers);
-                                System.out.print("Introdueix una opció: ");
-                                s1 = sc.next();
+                                boolean opFitxer = true;
+                                while (opFitxer) {
+                                    gui(opFitxers);
+                                    System.out.print("Introdueix una opció: ");
+                                    s1 = sc.next();
                                 switch (Integer.parseInt(s1)) {
                                     case 1:
+                                        System.out.println("Introdueix el nom del fitxer a enviar:");
+                                        String nomFitxer = sc.next();
+                                        enviaEnBlocs(nomFitxer, sk, dos, sk.getOutputStream());
                                         break;
                                     case 2:
+                                        System.out.println("Introdueix el nom del fitxer a llegir:");
+                                        String nomFitxerLlegir = sc.next();
+                                        FileInputStream fis = new FileInputStream(nomFitxerLlegir);
+                                        int content;
+                                        while ((content = fis.read()) != -1) {
+                                            System.out.print((char) content);
+                                        }
+                                        fis.close();
                                         break;
                                     case 3:
+                                        int contador = Integer.parseInt(dis.readUTF());
+                                        for (int i = 0; i < contador; i++) {
+                                            System.out.println(dis.readUTF());
+                                        }
+                                        System.out.println("Introdueix el nom del fitxer a descarregar:");
+                                        String nomFitxerDescarregar = sc.next();
+                                        dos.writeUTF(nomFitxerDescarregar);
+                                        descaregarFitxer(sk, dis, sk.getInputStream());
                                         break;
                                     case 4:
+                                        if (dis.readUTF().equals("true")) {
+                                            opFitxer = true;
+                                        }
                                         break;
+                                }
                                 }
                                 break;
                             case 3:
-                                gui(opXat);
-                                System.out.print("Introdueix una opció: ");
-                                s1 = sc.next();
-                                switch (Integer.parseInt(s1)) {
-                                    case 1:
-                                        break;
-                                    case 2:
-                                        break;
-                                    case 3:
-                                        break;
-                                    case 4:
-                                        break;
+
+                                boolean xat = false;
+                                while (!xat) {
+                                    gui(opXat);
+                                    System.out.print("Introdueix una opció: ");
+                                    s1 = sc.next();
+                                    switch (Integer.parseInt(s1)) {
+                                        case 1:
+                                            System.out.print("Introdueix el misatge que vols enviar: ");
+
+                                            break;
+                                        case 2:
+                                            System.out.println("Llista usuaris: ");
+
+                                            break;
+                                        case 3:
+                                            if (dis.readUTF().equals("true")) {
+                                                xat = true;
+                                            }
+                                            break;
+
+                                    }
                                 }
                                 break;
                             case 4:
@@ -384,6 +429,7 @@ public class Cliente {
                                 if (dis.readUTF().equals("true")) {
                                     signOut = true;
                                 }
+                                gui(exit);
                                 break;
 
                         }
@@ -408,8 +454,6 @@ public class Cliente {
                     if (dis.readUTF().equals("true")) {
                         sortir = true;
                     }
-                    gui(exit);
-
                     break;
 
             }
@@ -448,5 +492,90 @@ public class Cliente {
             System.out.print(horizontalChar);
         }
         System.out.println();
+    }
+
+    public static void descaregarFitxer(Socket sk, DataInputStream ois, InputStream in) throws IOException {
+        int lbloc = 512; //no cal que sigui el mateix tamany en el emisor i receptor
+
+        FileOutputStream fileOutput;
+        BufferedOutputStream bo;
+        File fo;
+
+        String nomfich;
+        try {
+            nomfich = ois.readUTF();
+
+            String s[] = nomfich.split("[\\\\/]"); //per si acàs, treiem la ruta del nom del fitxer, per si s'ha posat
+            nomfich = s[s.length - 1];
+
+            String nomfichPrevi = "rebrent_" + nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
+            long lfic = ois.readLong();
+
+            fo = new File(nomfichPrevi);
+            fo.delete(); //Eliminem el fitxer per si ja existia d'abans
+            fileOutput = new FileOutputStream(fo);
+            bo = new BufferedOutputStream(fileOutput);
+            System.out.println("El fitxer ocuparà " + lfic + " bytes");
+
+            byte b[] = new byte[(int) lbloc];
+
+            long lleva = 0;
+            while (lleva < lfic) {
+                int leido;
+                if (lfic - lleva > lbloc) {
+                    leido = in.read(b, 0, lbloc); //llegeix com al molt lbloc bytes, però pot ser que sigui altra quantitat menor
+                } else {//falten menys bytes que lbloc
+                    leido = in.read(b, 0, (int) (lfic - lleva)); //llegeix com a molt tants bytes com falten
+                }
+                bo.write(b, 0, leido);
+                lleva = lleva + leido; //per saber quants es porten llegits
+                System.out.println("Bytes rebuts: " + leido + " portem: " + lleva + " bytes");
+            }
+            //reanomena el fitxer
+            File nufile = new File(nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
+            nufile.delete();
+            fo.renameTo(nufile);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void enviaEnBlocs(String nomfich, Socket sk, DataOutputStream oos, OutputStream out) throws IOException {
+        int lbloc = 1024; //tamany del bloc --> sol ser múltiple de 256 bytes, però pot ser qualsevol valor
+        // Aquest tamany no cal que sigui el mateix en el emisor que en el receptor.
+
+        try {
+            File fi = new File(nomfich);
+            System.out.println(nomfich);
+            FileInputStream fileInput = new FileInputStream(fi);
+            BufferedInputStream bi = new BufferedInputStream(fileInput);
+            long lfic = fi.length();
+            oos.writeUTF(nomfich);
+            oos.writeLong(lfic);
+            // oos.flush(); //envía el buffer, pero no cal, doncs continuem escrivint en oos
+
+            long veces = lfic / lbloc; //quants blocs s'han d'enviar
+            int resto = (int) (lfic % lbloc); //quant querarà al final per enviar
+
+            byte b[] = new byte[lbloc];
+
+            for (long i = 0; i < veces; i++) {
+                bi.read(b); //llegeix un tros del fitxer
+                out.write(b); // envia el tros del fitxer
+                System.out.println("enviat el tros " + i + " portem enviats " + (i + 1) * lbloc + " bytes");
+            }
+            //envia la resta del fitxer
+            if (resto > 0) {
+                bi.read(b, 0, resto); // llegeix la resta del fitxer en b
+                out.write(b, 0, resto); // l'enviem
+                System.out.println("Enviem els " + resto + " bytes restants");
+            }
+            //oos.flush(); //no cal, es fa un flush al fer el close de oos
+            System.out.println("Enviat");
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 }

@@ -6,7 +6,9 @@ import java.net.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 import java.util.logging.*;
 import static projecte.baseDades.obtenerCon;
 
@@ -41,6 +43,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 System.out.println("Escoltant el port " + PUERTO);
                 System.out.println("connectant amb el client " + sk.getInetAddress().getHostAddress());
                 sv.start();
+                logs("S’ha conectat aquesta ip al servidor: " + sk.getInetAddress());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -136,8 +139,37 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                 }
                                                 break;
                                             case 2:
+                                                boolean opfitxers = false;
+                                                while (!opfitxers) {
+                                                    respostaUsuariRebut = dis.readUTF();
+                                                    switch (Integer.parseInt(respostaUsuariRebut)) {
+                                                        case 1:
+
+                                                            break;
+                                                        case 2:
+                                                            break;
+                                                        case 3:
+                                                            break;
+                                                        case 4:
+                                                            break;
+                                                    }
+                                                }
                                                 break;
                                             case 3:
+                                                boolean opxat = false;
+                                                while (!opxat) {
+                                                    respostaUsuariRebut = dis.readUTF();
+                                                    switch (Integer.parseInt(respostaUsuariRebut)) {
+                                                        case 1:
+                                                            break;
+                                                        case 2:
+                                                            break;
+                                                        case 3:
+                                                            break;
+                                                        case 4:
+                                                            break;
+                                                    }
+                                                }
                                                 break;
                                             case 4:
                                                 boolean sortirConfigServer = false;
@@ -240,7 +272,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                 String NomC = dis.readUTF();
                                 String CognomC = dis.readUTF();
                                 String contraseñaC = dis.readUTF();
-                                usuarioInsert(idUsuariC, NomC, CognomC, contraseñaC);
+                                usuarioInsert(idUsuariC, NomC, CognomC, contraseñaC, dos);
                             }
                             break;
                         case 3:
@@ -289,9 +321,11 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             rs.next();
             if (rs.getString("idusuario").equals(idUsuario)) {
                 System.out.println("Login correcte");
+                logs("El usuari:" + idUsuario + " ha iniciat sesio.");
                 return true;
             } else {
                 System.out.println("No ha iniciado sesion");
+                logs("El usuari " + idUsuario + " no ha pogut iniciar sesió.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -299,33 +333,29 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         return false;
     }
 
-    private static void usuarioInsert(String idusuario, String name, String cognoms, String contraseña) {
+    private static void usuarioInsert(String idusuario, String name, String cognoms, String contraseña, DataOutputStream dos) throws IOException {
         try {
+
             PreparedStatement st = cn.prepareStatement("INSERT INTO usuario(idusuario, nom, cognoms, contraseña) VALUES (?, ?, ?, ?);");
             st.setString(1, idusuario);
             st.setString(2, name);
             st.setString(3, cognoms);
             String hash = cifrar(contraseña);
             st.setString(4, hash);
-            st.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private static ArrayList<String> llistarUsuaris() throws IOException {
-        try {
-            ArrayList<String> missatgesAEnviar = new ArrayList<>();
-            PreparedStatement st2 = cn.prepareStatement("SELECT idusuario, nom, cognoms, contraseña FROM usuario;");
-            ResultSet rs = st2.executeQuery();
-            while (rs.next()) {
-                missatgesAEnviar.add(rs.getString("idusuario") + " = " + rs.getString("nom"));
+            PreparedStatement st1 = cn.prepareStatement("SELECT idusuario FROM usuario WHERE idusuario = ?;");
+            st1.setString(1, idusuario);
+            ResultSet rs1 = st1.executeQuery();
+            if (!rs1.next()) {
+                st.executeUpdate();
+                dos.writeUTF("correcto");
+                logs("S’ha registrat un nou usuari: " + idusuario);
+            } else {
+                dos.writeUTF("usuario");
+                logs("No se ha podido registrar el usuario porque coincide con un nombre de la base de datos.");
             }
-            return missatgesAEnviar;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return null;
     }
 
     private static void crearGrupo(String idgrupo, String idusuario, DataOutputStream dos) throws SQLException, IOException {
@@ -339,8 +369,10 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 st2.setString(2, idusuario);
                 st2.executeUpdate();
                 dos.writeUTF("correcte");
-            }else{
+                logs("El usuario " + idusuario + " ha creado el grupo " + idgrupo + " correctamente. ");
+            } else {
                 dos.writeUTF("grupo");
+                logs("El usuario " + idusuario + " ha intentado crear  el grupo " + idgrupo + " pero ya hay un gurpo que se llama asi.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -362,11 +394,14 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                     st3.setString(1, idgrupo);
                     st3.execute();
                     dos.writeUTF("correcte");
+                    logs("El usuario " + idusuario + " ha eliminado el grupo " + idgrupo + " correctamente. ");
                 } else {
                     dos.writeUTF("admin");
+                    logs("El usuario " + idusuario + " ha intentado eliminar el grupo " + idgrupo + " pero no es el administrador ");
                 }
             } else {
                 dos.writeUTF("grup");
+                logs("El grup " + idgrupo + " no existeix.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -385,6 +420,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 ResultSet rs2 = st2.executeQuery();
                 if (rs2.next()) {
                     dos.writeUTF("correcte");
+
                     return true;
                 } else {
                     dos.writeUTF("admin");
@@ -471,6 +507,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             for (int i = 0; i < membres.size(); i++) {
                 dos.writeUTF(membres.get(i));
             }
+            logs("Se ha listado los usuarios de este grupo: " + idgrupo);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -485,6 +522,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             while (rs.next()) {
                 grups.add(rs.getString("idgrupo"));
             }
+            logs("El usuari " + idusuari + " ha llistat els grups. ");
             return grups;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -501,6 +539,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             while (hashtext.length() < 32) {
                 hashtext = "0" + hashtext;
             }
+            logs("S’ha xifrat una contrasenya.");
             return hashtext;
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -538,6 +577,121 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         nufile.delete();
         fo.renameTo(nufile);
         System.out.println("Fitxer descargat: " + respostaUsuariRebut);
+        logs("S’ha descaregat el fitxer: " + respostaUsuariRebut);
     }
 
+    public static void enviarMisatge(String receptorUsuario, String mensaje, DataOutputStream dos, String idUsuari, HashMap usuariosConectados) throws IOException {
+        Socket receptorSocket = (Socket) usuariosConectados.get(receptorUsuario);
+        if (receptorSocket != null) {
+            try {
+                DataOutputStream dosReceptor = new DataOutputStream(receptorSocket.getOutputStream());
+                dosReceptor.writeUTF("Mensaje de " + idUsuari + " : " + mensaje);
+                dos.writeUTF("Enviado: " + mensaje);
+                System.out.println("Mensaje enviado");
+                logs("El usuari " + idUsuari + " ha enviat un misatge al usuari " + receptorUsuario);
+            } catch (IOException e) {
+                e.printStackTrace();
+                dos.writeUTF("Error al enviar el mensaje al usuario receptor");
+                logs("El usuari " + idUsuari + " ha enviat un misatge al usuari " + receptorUsuario + " pero no li ha arribat");
+            }
+        } else {
+            dos.writeUTF("El usuario receptor no está conectado");
+            logs("El usuari " + idUsuari + " ha intentat enviar un misatge al usuari " + receptorUsuario + " pero no esta conectat.");
+        }
+    }
+
+    public static void logs(String missatge) {
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String logMessage = formato.format(new Date()) + ": " + missatge;
+        try ( PrintWriter writer = new PrintWriter(new FileWriter("logs.txt", true))) {
+            writer.println(missatge);
+        } catch (IOException e) {
+            System.out.println("Error al guardar el log.");
+        }
+    }
+
+    public static void descaregarFitxer(Socket sk, DataInputStream ois, InputStream in) throws IOException {
+        int lbloc = 512; //no cal que sigui el mateix tamany en el emisor i receptor
+
+        FileOutputStream fileOutput;
+        BufferedOutputStream bo;
+        File fo;
+
+        String nomfich;
+        try {
+            nomfich = ois.readUTF();
+
+            String s[] = nomfich.split("[\\\\/]"); //per si acàs, treiem la ruta del nom del fitxer, per si s'ha posat
+            nomfich = s[s.length - 1];
+
+            String nomfichPrevi = "rebrent_" + nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
+            long lfic = ois.readLong();
+
+            fo = new File(nomfichPrevi);
+            fo.delete(); //Eliminem el fitxer per si ja existia d'abans
+            fileOutput = new FileOutputStream(fo);
+            bo = new BufferedOutputStream(fileOutput);
+            System.out.println("El fitxer ocuparà " + lfic + " bytes");
+
+            byte b[] = new byte[(int) lbloc];
+
+            long lleva = 0;
+            while (lleva < lfic) {
+                int leido;
+                if (lfic - lleva > lbloc) {
+                    leido = in.read(b, 0, lbloc); //llegeix com al molt lbloc bytes, però pot ser que sigui altra quantitat menor
+                } else {//falten menys bytes que lbloc
+                    leido = in.read(b, 0, (int) (lfic - lleva)); //llegeix com a molt tants bytes com falten
+                }
+                bo.write(b, 0, leido);
+                lleva = lleva + leido; //per saber quants es porten llegits
+                System.out.println("Bytes rebuts: " + leido + " portem: " + lleva + " bytes");
+            }
+            //reanomena el fitxer
+            File nufile = new File(nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
+            nufile.delete();
+            fo.renameTo(nufile);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void enviaEnBlocs(String nomfich, Socket sk, DataOutputStream oos, OutputStream out) throws IOException {
+        int lbloc = 1024; //tamany del bloc --> sol ser múltiple de 256 bytes, però pot ser qualsevol valor
+        // Aquest tamany no cal que sigui el mateix en el emisor que en el receptor.
+
+        try {
+            File fi = new File(nomfich);
+            System.out.println(nomfich);
+            FileInputStream fileInput = new FileInputStream(fi);
+            BufferedInputStream bi = new BufferedInputStream(fileInput);
+            long lfic = fi.length();
+            oos.writeUTF(nomfich);
+            oos.writeLong(lfic);
+            // oos.flush(); //envía el buffer, pero no cal, doncs continuem escrivint en oos
+
+            long veces = lfic / lbloc; //quants blocs s'han d'enviar
+            int resto = (int) (lfic % lbloc); //quant querarà al final per enviar
+
+            byte b[] = new byte[lbloc];
+
+            for (long i = 0; i < veces; i++) {
+                bi.read(b); //llegeix un tros del fitxer
+                out.write(b); // envia el tros del fitxer
+                System.out.println("enviat el tros " + i + " portem enviats " + (i + 1) * lbloc + " bytes");
+            }
+            //envia la resta del fitxer
+            if (resto > 0) {
+                bi.read(b, 0, resto); // llegeix la resta del fitxer en b
+                out.write(b, 0, resto); // l'enviem
+                System.out.println("Enviem els " + resto + " bytes restants");
+            }
+            //oos.flush(); //no cal, es fa un flush al fer el close de oos
+            System.out.println("Enviat");
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
 }
