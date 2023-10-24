@@ -577,7 +577,7 @@ public class Cliente {
             String nomfichPrevi = nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
             long lfic = ois.readLong();
             
-            fo = new File("..\\fitxersClient\\rebent_"+nomfichPrevi);
+            fo = new File("..\\fitxersClient\\"+nomfichPrevi);
             fo.delete(); //Eliminem el fitxer per si ja existia d'abans
             fileOutput = new FileOutputStream(fo);
             bo = new BufferedOutputStream(fileOutput);
