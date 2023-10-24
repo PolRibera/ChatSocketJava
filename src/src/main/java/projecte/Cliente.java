@@ -561,7 +561,7 @@ public class Cliente {
     }
 
     public static void descaregarFitxer(Socket sk, DataInputStream ois, InputStream in) throws IOException {
-        int lbloc = 512; //no cal que sigui el mateix tamany en el emisor i receptor
+        int lbloc = 20000; //no cal que sigui el mateix tamany en el emisor i receptor
 
         FileOutputStream fileOutput;
         BufferedOutputStream bo;
@@ -608,7 +608,7 @@ public class Cliente {
     }
 
     public static void enviaEnBlocs(String nomfich, Socket sk, DataOutputStream oos, OutputStream out) throws IOException {
-        int lbloc = 1024; //tamany del bloc --> sol ser múltiple de 256 bytes, però pot ser qualsevol valor
+        int lbloc = 20000; //tamany del bloc --> sol ser múltiple de 256 bytes, però pot ser qualsevol valor
         // Aquest tamany no cal que sigui el mateix en el emisor que en el receptor.
 
         try {
