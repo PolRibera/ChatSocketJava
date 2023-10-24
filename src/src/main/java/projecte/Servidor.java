@@ -22,7 +22,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
     private static String HOST = "localhost";
     private static String DATABASE = "projectexat";
     private static String USER = "root";
-    private static String PASSWORD = "admin";
+    private static String PASSWORD = "1234";
 
     public static Properties propertiesServer;
     public static Properties propertiesClient;
@@ -138,8 +138,8 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                 }
                                                 break;
                                             case 2:
-                                                boolean opfitxers = false;
-                                                while (!opfitxers) {
+                                                boolean opFitxers = false;
+                                                while (!opFitxers) {
                                                     respostaUsuariRebut = dis.readUTF();
                                                     switch (Integer.parseInt(respostaUsuariRebut)) {
                                                         case 1:
@@ -150,6 +150,8 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                         case 3:
                                                             break;
                                                         case 4:
+                                                            dos.writeUTF("true");
+                                                            opFitxers = true;
                                                             break;
                                                     }
                                                 }
@@ -166,6 +168,8 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                         case 3:
                                                             break;
                                                         case 4:
+                                                            dos.writeUTF("true");
+                                                            opxat=true;
                                                             break;
                                                     }
                                                 }

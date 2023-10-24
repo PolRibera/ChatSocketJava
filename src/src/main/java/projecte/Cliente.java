@@ -87,9 +87,10 @@ public class Cliente {
             "",
             "Opcions Xat                        ",
             "",
-            "1.- [Xat]                          ",
-            "2.- [Llistar usuaris]              ",
-            "3.- [Menu principal]               ",
+            "1.- [Enviar Missatge]              ",
+            "2.- [Rebre Missatge]               ",
+            "3.- [Llistar usuaris]              ",
+            "4.- [Menu principal]               ",
             "",};
 
         String[] confServidor = {
@@ -132,7 +133,6 @@ public class Cliente {
             System.out.println("Introdueix una opció: ");
             String s1 = sc.next();
             dos.writeUTF(s1);
-            boolean signOut = false;
             switch (Integer.parseInt(s1)) {
                 case 1:
                     int con = 0;
@@ -173,265 +173,275 @@ public class Cliente {
                         "",};
                     if (repServidor.equals("true")) {
                         Thread.sleep(500);
-                        gui(pantallaPrincipal);
-                        s1 = sc.next();
-                        dos.writeUTF(s1);
-                        switch (Integer.parseInt(s1)) {
-                            case 1:
-                                String idgrupo;
-                                boolean grupo = false;
-                                while (!grupo) {
-                                    gui(opGrup);
+                        boolean SortirMenu = false;
+                        while (!SortirMenu){
+                            gui(pantallaPrincipal);
+                            s1 = sc.next();
+                            dos.writeUTF(s1);
+                            switch (Integer.parseInt(s1)) {
+                                case 1:
+                                    String idgrupo;
+                                    boolean grupo = false;
+                                    while (!grupo) {
+                                        gui(opGrup);
+                                        s1 = sc.next();
+                                        dos.writeUTF(s1);
+                                        switch (Integer.parseInt(s1)) {
+                                            case 1:
+                                                System.out.println("Nombre del grupo: ");
+                                                idgrupo = sc.next();
+                                                dos.writeUTF(idgrupo);
+                                                String respuestaCrear = dis.readUTF();
+                                                if (respuestaCrear.equals("correcte")) {
+                                                    System.out.println("Grupo creado correctamente");
+                                                } else if (respuestaCrear.equals("grupo")) {
+                                                    System.out.println("El grupo ya existe");
+                                                }
+                                                String respuestacrear2 = dis.readUTF();
+                                                break;
+                                            case 2:
+                                                System.out.println("Nombre del grupo: ");
+                                                idgrupo = sc.next();
+                                                dos.writeUTF(idgrupo);
+                                                String resposta = dis.readUTF();
+                                                if (resposta.equals("correcte")) {
+                                                    boolean adgrup = false;
+                                                    while (!adgrup) {
+                                                        gui(adminGrup);
+                                                        s1 = sc.next();
+                                                        dos.writeUTF(s1);
+                                                        switch (Integer.parseInt(s1)) {
+                                                            case 1:
+                                                                System.out.println("Nom d'usuari: ");
+                                                                s1 = sc.next();
+                                                                dos.writeUTF(s1);
+                                                                resposta = dis.readUTF();
+                                                                if (resposta.equals("correcte")) {
+                                                                    System.out.println("Usuari afegit");
+                                                                } else if (resposta.equals("relacio")) {
+                                                                    System.out.println("El usuari ya pertany a aquest grup");
+                                                                } else if (resposta.equals("usuari")) {
+                                                                    System.out.println("El usuari no existeix");
+                                                                }
+                                                                break;
+                                                            case 2:
+                                                                System.out.println("Nom d'usuari: ");
+                                                                s1 = sc.next();
+                                                                dos.writeUTF(s1);
+                                                                resposta = dis.readUTF();
+                                                                if (resposta.equals("correcte")) {
+                                                                    System.out.println("Usuari esborrat");
+                                                                } else if (resposta.equals("relacio")) {
+                                                                    System.out.println("El usuari no pertany a aquest grup");
+                                                                } else if (resposta.equals("usuari")) {
+                                                                    System.out.println("El usuari no existeix");
+                                                                } else if (resposta.equals("admin")) {
+                                                                    System.out.println("No pots eliminar el teu usuari");
+                                                                }
+                                                                break;
+                                                            case 3:
+                                                                System.out.println("El grup ha sigut esborrat");
+                                                                break;
+                                                            case 4:
+                                                                int contador = Integer.parseInt(dis.readUTF());
+                                                                String usuario;
+                                                                System.out.println("Usuaris del grup " + idgrupo + ":\n");
+                                                                for (int i = 0; i < contador; i++) {
+                                                                    usuario = dis.readUTF();
+                                                                    System.out.println(usuario);
+                                                                }
+                                                                break;
+                                                            case 5:
+                                                                if (dis.readUTF().equals("true")) {
+                                                                    adgrup = true;
+                                                                }
+                                                                break;
+                                                        }
+                                                    }
+                                                } else if (resposta.equals("admin")) {
+                                                    System.out.println("No eres el admin de este grupo");
+                                                } else if (resposta.equals("grupo")) {
+                                                    System.out.println("El grupo no existe");
+                                                }
+                                                break;
+                                            case 3:
+                                                if (dis.readUTF().equals("true")) {
+                                                    grupo = true;
+                                                }
+
+                                                break;
+                                        }
+                                    }
+                                    break;
+                                case 2:
+                                    boolean opFitxer = false;
+                                    while (!opFitxer) {
+                                        gui(opFitxers);
+                                        System.out.print("Introdueix una opció: ");
+                                        s1 = sc.next();
+                                        dos.writeUTF(s1);
+                                    switch (Integer.parseInt(s1)) {
+                                        case 1:
+                                            System.out.println("Introdueix el nom del fitxer a enviar:");
+                                            String nomFitxer = sc.next();
+                                            enviaEnBlocs(nomFitxer, sk, dos, sk.getOutputStream());
+                                            break;
+                                        case 2:
+                                            System.out.println("Introdueix el nom del fitxer a llegir:");
+                                            String nomFitxerLlegir = sc.next();
+                                            FileInputStream fis = new FileInputStream(nomFitxerLlegir);
+                                            int content;
+                                            while ((content = fis.read()) != -1) {
+                                                System.out.print((char) content);
+                                            }
+                                            fis.close();
+                                            break;
+                                        case 3:
+                                            int contador = Integer.parseInt(dis.readUTF());
+                                            for (int i = 0; i < contador; i++) {
+                                                System.out.println(dis.readUTF());
+                                            }
+                                            System.out.println("Introdueix el nom del fitxer a descarregar:");
+                                            String nomFitxerDescarregar = sc.next();
+                                            dos.writeUTF(nomFitxerDescarregar);
+                                            descaregarFitxer(sk, dis, sk.getInputStream());
+                                            break;
+                                        case 4:
+                                            if (dis.readUTF().equals("true")) {
+                                                opFitxer = true;
+                                            }
+                                            break;
+                                    }
+                                    }
+                                    break;
+                                case 3:
+                                    boolean xat = false;
+                                    while (!xat) {
+                                        gui(opXat);
+                                        System.out.print("Introdueix una opció: ");
+                                        s1 = sc.next();
+                                        dos.writeUTF(s1);
+                                        switch (Integer.parseInt(s1)) {
+                                            case 1:
+                                                System.out.print("Introdueix el misatge que vols enviar: ");
+
+                                                break;
+                                            case 2:
+                                                System.out.print("Rebent missatges.... ");
+
+                                                break;
+                                            case 3:
+                                                System.out.println("Llista usuaris: ");
+
+                                                break;
+                                            case 4:
+                                                if (dis.readUTF().equals("true")) {
+                                                    xat = true;
+                                                }
+                                                break;
+
+                                        }
+                                    }
+                                    break;
+                                case 4:
+                                    gui(confServidor);
+                                    System.out.print("Introdueix una opció: ");
+                                    s1 = sc.next();
+                                    dos.writeUTF(s1);
+                                    boolean sortirConfigServer = false;
+                                    while (!sortirConfigServer) {
+                                        switch (Integer.parseInt(s1)) {
+                                            case 1:
+                                                System.out.println(dis.readUTF());
+                                                System.out.println(dis.readUTF());
+                                                System.out.println(dis.readUTF());
+                                                System.out.println(dis.readUTF());
+                                                System.out.println(dis.readUTF());
+                                                System.out.println(dis.readUTF());
+                                                break;
+                                            case 2:
+                                                System.out.print("Introdueix la mida maxima del fitxer: ");
+                                                String mida = sc.next();
+                                                dos.writeUTF(mida);
+                                                break;
+                                            case 3:
+                                                System.out.print("Introdueix les conexions maximas al servidor: ");
+                                                String maxCon = sc.next();
+                                                dos.writeUTF(maxCon);
+                                                break;
+                                            case 4:
+                                                System.out.print("Introdueix la nova contrasenya de la base de dades: ");
+                                                String contraBase = sc.next();
+                                                dos.writeUTF(contraBase);
+                                                break;
+                                            case 5:
+                                                System.out.print("Introdueix el nom del nou Admin: ");
+                                                String clientAdmin = sc.next();
+                                                dos.writeUTF(clientAdmin);
+                                                break;
+                                            case 6:
+                                                System.out.print("Introdueix el nou nom del servidor: ");
+                                                String nomServer = sc.next();
+                                                dos.writeUTF(nomServer);
+                                                break;
+                                            case 7:
+                                                System.out.print("Introdueix la nova ruta on es guarden els fitxers: ");
+                                                String rutaFitxers = sc.next();
+                                                dos.writeUTF(rutaFitxers);
+                                                break;
+                                            case 8:
+                                                if (dis.readUTF().equals("true")) {
+                                                    sortirConfigServer = true;
+                                                }
+                                                break;
+
+                                        }
+                                    }
+                                    break;
+                                case 5:
+                                    gui(confClient);
+                                    System.out.print("Introdueix una opció: ");
                                     s1 = sc.next();
                                     dos.writeUTF(s1);
                                     switch (Integer.parseInt(s1)) {
                                         case 1:
-                                            System.out.println("Nombre del grupo: ");
-                                            idgrupo = sc.next();
-                                            dos.writeUTF(idgrupo);
-                                            String respuestaCrear = dis.readUTF();
-                                            if (respuestaCrear.equals("correcte")) {
-                                                System.out.println("Grupo creado correctamente");
-                                            } else if (respuestaCrear.equals("grupo")) {
-                                                System.out.println("El grupo ya existe");
-                                            }
-                                            String respuestacrear2 = dis.readUTF();
+                                            System.out.println(dis.readUTF());
+                                            System.out.println(dis.readUTF());
+                                            System.out.println(dis.readUTF());
+                                            System.out.println(dis.readUTF());
                                             break;
                                         case 2:
-                                            System.out.println("Nombre del grupo: ");
-                                            idgrupo = sc.next();
-                                            dos.writeUTF(idgrupo);
-                                            String resposta = dis.readUTF();
-                                            if (resposta.equals("correcte")) {
-                                                boolean adgrup = false;
-                                                while (!adgrup) {
-                                                    gui(adminGrup);
-                                                    s1 = sc.next();
-                                                    dos.writeUTF(s1);
-                                                    switch (Integer.parseInt(s1)) {
-                                                        case 1:
-                                                            System.out.println("Nom d'usuari: ");
-                                                            s1 = sc.next();
-                                                            dos.writeUTF(s1);
-                                                            resposta = dis.readUTF();
-                                                            if (resposta.equals("correcte")) {
-                                                                System.out.println("Usuari afegit");
-                                                            } else if (resposta.equals("relacio")) {
-                                                                System.out.println("El usuari ya pertany a aquest grup");
-                                                            } else if (resposta.equals("usuari")) {
-                                                                System.out.println("El usuari no existeix");
-                                                            }
-                                                            break;
-                                                        case 2:
-                                                            System.out.println("Nom d'usuari: ");
-                                                            s1 = sc.next();
-                                                            dos.writeUTF(s1);
-                                                            resposta = dis.readUTF();
-                                                            if (resposta.equals("correcte")) {
-                                                                System.out.println("Usuari esborrat");
-                                                            } else if (resposta.equals("relacio")) {
-                                                                System.out.println("El usuari no pertany a aquest grup");
-                                                            } else if (resposta.equals("usuari")) {
-                                                                System.out.println("El usuari no existeix");
-                                                            } else if (resposta.equals("admin")) {
-                                                                System.out.println("No pots eliminar el teu usuari");
-                                                            }
-                                                            break;
-                                                        case 3:
-                                                            System.out.println("El grup ha sigut esborrat");
-                                                            break;
-                                                        case 4:
-                                                            int contador = Integer.parseInt(dis.readUTF());
-                                                            String usuario;
-                                                            System.out.println("Usuaris del grup " + idgrupo + ":\n");
-                                                            for (int i = 0; i < contador; i++) {
-                                                                usuario = dis.readUTF();
-                                                                System.out.println(usuario);
-                                                            }
-                                                            break;
-                                                        case 5:
-                                                            if (dis.readUTF().equals("true")) {
-                                                                adgrup = true;
-                                                            }
-                                                            break;
-                                                    }
-                                                }
-                                            } else if (resposta.equals("admin")) {
-                                                System.out.println("No eres el admin de este grupo");
-                                            } else if (resposta.equals("grupo")) {
-                                                System.out.println("El grupo no existe");
-                                            }
+                                            System.out.print("Introdueix el nou nom del client: ");
+                                            String nomClient = sc.next();
+                                            dos.writeUTF(nomClient);
                                             break;
                                         case 3:
-                                            if (dis.readUTF().equals("true")) {
-                                                grupo = true;
-                                            }
-
-                                            break;
-                                    }
-                                }
-                                break;
-                            case 2:
-                                boolean opFitxer = true;
-                                while (opFitxer) {
-                                    gui(opFitxers);
-                                    System.out.print("Introdueix una opció: ");
-                                    s1 = sc.next();
-                                switch (Integer.parseInt(s1)) {
-                                    case 1:
-                                        System.out.println("Introdueix el nom del fitxer a enviar:");
-                                        String nomFitxer = sc.next();
-                                        enviaEnBlocs(nomFitxer, sk, dos, sk.getOutputStream());
-                                        break;
-                                    case 2:
-                                        System.out.println("Introdueix el nom del fitxer a llegir:");
-                                        String nomFitxerLlegir = sc.next();
-                                        FileInputStream fis = new FileInputStream(nomFitxerLlegir);
-                                        int content;
-                                        while ((content = fis.read()) != -1) {
-                                            System.out.print((char) content);
-                                        }
-                                        fis.close();
-                                        break;
-                                    case 3:
-                                        int contador = Integer.parseInt(dis.readUTF());
-                                        for (int i = 0; i < contador; i++) {
-                                            System.out.println(dis.readUTF());
-                                        }
-                                        System.out.println("Introdueix el nom del fitxer a descarregar:");
-                                        String nomFitxerDescarregar = sc.next();
-                                        dos.writeUTF(nomFitxerDescarregar);
-                                        descaregarFitxer(sk, dis, sk.getInputStream());
-                                        break;
-                                    case 4:
-                                        if (dis.readUTF().equals("true")) {
-                                            opFitxer = true;
-                                        }
-                                        break;
-                                }
-                                }
-                                break;
-                            case 3:
-
-                                boolean xat = false;
-                                while (!xat) {
-                                    gui(opXat);
-                                    System.out.print("Introdueix una opció: ");
-                                    s1 = sc.next();
-                                    switch (Integer.parseInt(s1)) {
-                                        case 1:
-                                            System.out.print("Introdueix el misatge que vols enviar: ");
-
-                                            break;
-                                        case 2:
-                                            System.out.println("Llista usuaris: ");
-
-                                            break;
-                                        case 3:
-                                            if (dis.readUTF().equals("true")) {
-                                                xat = true;
-                                            }
-                                            break;
-
-                                    }
-                                }
-                                break;
-                            case 4:
-                                gui(confServidor);
-                                System.out.print("Introdueix una opció: ");
-                                s1 = sc.next();
-                                boolean sortirConfigServer = false;
-                                while (!sortirConfigServer) {
-                                    switch (Integer.parseInt(s1)) {
-                                        case 1:
-                                            System.out.println(dis.readUTF());
-                                            System.out.println(dis.readUTF());
-                                            System.out.println(dis.readUTF());
-                                            System.out.println(dis.readUTF());
-                                            System.out.println(dis.readUTF());
-                                            System.out.println(dis.readUTF());
-                                            break;
-                                        case 2:
-                                            System.out.print("Introdueix la mida maxima del fitxer: ");
+                                            System.out.print("Introdueix la mida maxima del fitxer per enviar/rebre: ");
                                             String mida = sc.next();
                                             dos.writeUTF(mida);
                                             break;
-                                        case 3:
-                                            System.out.print("Introdueix les conexions maximas al servidor: ");
-                                            String maxCon = sc.next();
-                                            dos.writeUTF(maxCon);
-                                            break;
                                         case 4:
-                                            System.out.print("Introdueix la nova contrasenya de la base de dades: ");
-                                            String contraBase = sc.next();
-                                            dos.writeUTF(contraBase);
+                                            System.out.print("Introdueix la nova ip: ");
+                                            String ip = sc.next();
+                                            dos.writeUTF(ip);
                                             break;
                                         case 5:
-                                            System.out.print("Introdueix el nom del nou Admin: ");
-                                            String clientAdmin = sc.next();
-                                            dos.writeUTF(clientAdmin);
+                                            System.out.print("Introdueix el nou port: ");
+                                            String port = sc.next();
+                                            dos.writeUTF(port);
                                             break;
                                         case 6:
-                                            System.out.print("Introdueix el nou nom del servidor: ");
-                                            String nomServer = sc.next();
-                                            dos.writeUTF(nomServer);
                                             break;
-                                        case 7:
-                                            System.out.print("Introdueix la nova ruta on es guarden els fitxers: ");
-                                            String rutaFitxers = sc.next();
-                                            dos.writeUTF(rutaFitxers);
-                                            break;
-                                        case 8:
-                                            if (dis.readUTF().equals("true")) {
-                                                sortirConfigServer = true;
-                                            }
-                                            break;
-
                                     }
-                                }
-                                break;
-                            case 5:
-                                gui(confClient);
-                                System.out.print("Introdueix una opció: ");
-                                s1 = sc.next();
-                                switch (Integer.parseInt(s1)) {
-                                    case 1:
-                                        System.out.println(dis.readUTF());
-                                        System.out.println(dis.readUTF());
-                                        System.out.println(dis.readUTF());
-                                        System.out.println(dis.readUTF());
-                                        break;
-                                    case 2:
-                                        System.out.print("Introdueix el nou nom del client: ");
-                                        String nomClient = sc.next();
-                                        dos.writeUTF(nomClient);
-                                        break;
-                                    case 3:
-                                        System.out.print("Introdueix la mida maxima del fitxer per enviar/rebre: ");
-                                        String mida = sc.next();
-                                        dos.writeUTF(mida);
-                                        break;
-                                    case 4:
-                                        System.out.print("Introdueix la nova ip: ");
-                                        String ip = sc.next();
-                                        dos.writeUTF(ip);
-                                        break;
-                                    case 5:
-                                        System.out.print("Introdueix el nou port: ");
-                                        String port = sc.next();
-                                        dos.writeUTF(port);
-                                        break;
-                                    case 6:
-                                        break;
-                                }
-                                break;
-                            case 6:
-                                if (dis.readUTF().equals("true")) {
-                                    signOut = true;
-                                }
-                                gui(exit);
-                                break;
+                                    break;
+                                case 6:
+                                    if (dis.readUTF().equals("true")) {
+                                        SortirMenu = true;
+                                    }
+                                    gui(exit);
+                                    break;
 
+                            }
                         }
                     }
                     break;
