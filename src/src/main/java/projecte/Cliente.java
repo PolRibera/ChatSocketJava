@@ -297,13 +297,14 @@ public class Cliente {
                                             fis.close();
                                             break;
                                         case 3:
+                                            String directorioDescarga = dis.readUTF();
                                             int contador = Integer.parseInt(dis.readUTF());
                                             for (int i = 0; i < contador; i++) {
                                                 System.out.println(dis.readUTF());
                                             }
                                             System.out.println("Introdueix el nom del fitxer a descarregar:");
                                             String nomFitxerDescarregar = sc.next();
-                                            dos.writeUTF(nomFitxerDescarregar);
+                                            dos.writeUTF(directorioDescarga+"\\"+nomFitxerDescarregar);
                                             descaregarFitxer(sk, dis, sk.getInputStream());
                                             break;
                                         case 4:
@@ -518,10 +519,10 @@ public class Cliente {
             String s[] = nomfich.split("[\\\\/]"); //per si acàs, treiem la ruta del nom del fitxer, per si s'ha posat
             nomfich = s[s.length - 1];
 
-            String nomfichPrevi = "rebrent_" + nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
+            String nomfichPrevi = nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
             long lfic = ois.readLong();
-
-            fo = new File(nomfichPrevi);
+            
+            fo = new File("..\\fitxersClient\\"+nomfichPrevi);
             fo.delete(); //Eliminem el fitxer per si ja existia d'abans
             fileOutput = new FileOutputStream(fo);
             bo = new BufferedOutputStream(fileOutput);
@@ -539,13 +540,12 @@ public class Cliente {
                 }
                 bo.write(b, 0, leido);
                 lleva = lleva + leido; //per saber quants es porten llegits
-                System.out.println("Bytes rebuts: " + leido + " portem: " + lleva + " bytes");
             }
             //reanomena el fitxer
-            File nufile = new File(nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
+            File nufile = new File("..\\fitxersClient\\"+nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
             nufile.delete();
             fo.renameTo(nufile);
-
+            System.out.println("Rebut");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -574,13 +574,11 @@ public class Cliente {
             for (long i = 0; i < veces; i++) {
                 bi.read(b); //llegeix un tros del fitxer
                 out.write(b); // envia el tros del fitxer
-                System.out.println("enviat el tros " + i + " portem enviats " + (i + 1) * lbloc + " bytes");
             }
             //envia la resta del fitxer
             if (resto > 0) {
                 bi.read(b, 0, resto); // llegeix la resta del fitxer en b
                 out.write(b, 0, resto); // l'enviem
-                System.out.println("Enviem els " + resto + " bytes restants");
             }
             //oos.flush(); //no cal, es fa un flush al fer el close de oos
             System.out.println("Enviat");

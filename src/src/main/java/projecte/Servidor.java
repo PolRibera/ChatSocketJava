@@ -142,12 +142,19 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                 while (!opFitxers) {
                                                     respostaUsuariRebut = dis.readUTF();
                                                     switch (Integer.parseInt(respostaUsuariRebut)) {
-                                                        case 1:
-
+                                                        case 1: // Enviar archivo al servidor // Nombre del archivo que el cliente desea enviar
+                                                            descaregarFitxer(sk, dis, sk.getInputStream()); // Utiliza tu función descaregarFitxer
+                                                            // Realiza alguna lógica adicional si es necesario con el archivo recibido
                                                             break;
-                                                        case 2:
+                                                        case 2: // Leer archivo (cliente envía solicitud)
+                                                            // Utiliza tu función listarFicheros
                                                             break;
-                                                        case 3:
+                                                        case 3: // Descargar archivo (cliente envía solicitud)
+                                                            String directorioDescarga = "../fitxersServer";
+                                                            dos.writeUTF(directorioDescarga);// Directorio en el servidor donde se encuentran los archivos a descargar
+                                                            listarFicheros(directorioDescarga, dos); // Utiliza tu función listarFicheros
+                                                            String archivoDescargar = dis.readUTF(); // Nombre del archivo que el cliente desea descargar
+                                                            enviaEnBlocs(archivoDescargar, sk, dos, sk.getOutputStream()); // Utiliza tu función enviaEnBlocs
                                                             break;
                                                         case 4:
                                                             dos.writeUTF("true");
@@ -548,41 +555,6 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             throw new RuntimeException(e);
         }
     }
-
-    public static void descaregarFitxer(String respostaUsuariRebut, DataOutputStream dos, DataInputStream dis) throws IOException {
-        FileOutputStream fileOutput;
-        BufferedOutputStream bo;
-        File fo;
-        String s2[] = respostaUsuariRebut.split("[\\\\/]"); //per si acàs, treiem la ruta del nom del fitxer, per si s'ha posat
-        int lbloc = 2048; //no cal que sigui el mateix tamany en el emisor i receptor
-        respostaUsuariRebut = s2[s2.length - 1];
-        String nomfichPrevi = "rebrent_" + respostaUsuariRebut; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
-        long lfic = dis.readLong();
-        fo = new File(nomfichPrevi);
-        fo.delete(); //Eliminem el fitxer per si ja existia d'abans
-        fileOutput = new FileOutputStream(fo);
-        bo = new BufferedOutputStream(fileOutput);
-        byte b[] = new byte[(int) lbloc];
-        long lleva = 0;
-        while (lleva < lfic) {
-            int leido;
-            if (lfic - lleva > lbloc) {
-                leido = dis.read(b, 0, lbloc); //llegeix com al molt lbloc bytes, però pot ser que sigui altra quantitat menor
-            } else {//falten menys bytes que lbloc
-                leido = dis.read(b, 0, (int) (lfic - lleva)); //llegeix com a molt tants bytes com falten
-            }
-            bo.write(b, 0, leido);
-            lleva = lleva + leido; //per saber quants es porten llegits
-        }
-        bo.close();
-        //reanomena el fitxer
-        File nufile = new File("rec_" + respostaUsuariRebut); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
-        nufile.delete();
-        fo.renameTo(nufile);
-        System.out.println("Fitxer descargat: " + respostaUsuariRebut);
-        logs("S’ha descaregat el fitxer: " + respostaUsuariRebut);
-    }
-
     public static void enviarMisatge(String receptorUsuario, String mensaje, DataOutputStream dos, String idUsuari, HashMap usuariosConectados) throws IOException {
         Socket receptorSocket = (Socket) usuariosConectados.get(receptorUsuario);
         if (receptorSocket != null) {
@@ -627,10 +599,10 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             String s[] = nomfich.split("[\\\\/]"); //per si acàs, treiem la ruta del nom del fitxer, per si s'ha posat
             nomfich = s[s.length - 1];
 
-            String nomfichPrevi = "rebrent_" + nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
+            String nomfichPrevi =  nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
             long lfic = ois.readLong();
 
-            fo = new File(nomfichPrevi);
+            fo = new File("..\\fitxersServer\\"+nomfichPrevi);
             fo.delete(); //Eliminem el fitxer per si ja existia d'abans
             fileOutput = new FileOutputStream(fo);
             bo = new BufferedOutputStream(fileOutput);
@@ -648,19 +620,41 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 }
                 bo.write(b, 0, leido);
                 lleva = lleva + leido; //per saber quants es porten llegits
-                System.out.println("Bytes rebuts: " + leido + " portem: " + lleva + " bytes");
             }
             //reanomena el fitxer
-            File nufile = new File(nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
+            File nufile = new File("..\\fitxersServer\\"+nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
             nufile.delete();
             fo.renameTo(nufile);
-
+            System.out.println("Rebut");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
-
+    public static void listarFicheros(String directorio, DataOutputStream dos) throws IOException {
+        File folder = new File(directorio);
+        ArrayList<String> llistatFitxers = new ArrayList<>();
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            int contador = 0;
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        contador++;
+                        llistatFitxers.add(file.getName());
+                    }
+                }
+                dos.writeUTF("" + contador + "");
+                for (int i = 0; i < contador; i++) {
+                    dos.writeUTF(llistatFitxers.get(i));
+                }
+            } else {
+                dos.writeUTF("El directorio está vacío.");
+            }
+        } else {
+            dos.writeUTF("El directorio no existe o no es una carpeta.");
+        }
+    }
     public static void enviaEnBlocs(String nomfich, Socket sk, DataOutputStream oos, OutputStream out) throws IOException {
         int lbloc = 1024; //tamany del bloc --> sol ser múltiple de 256 bytes, però pot ser qualsevol valor
         // Aquest tamany no cal que sigui el mateix en el emisor que en el receptor.
@@ -683,13 +677,11 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             for (long i = 0; i < veces; i++) {
                 bi.read(b); //llegeix un tros del fitxer
                 out.write(b); // envia el tros del fitxer
-                System.out.println("enviat el tros " + i + " portem enviats " + (i + 1) * lbloc + " bytes");
             }
             //envia la resta del fitxer
             if (resto > 0) {
                 bi.read(b, 0, resto); // llegeix la resta del fitxer en b
                 out.write(b, 0, resto); // l'enviem
-                System.out.println("Enviem els " + resto + " bytes restants");
             }
             //oos.flush(); //no cal, es fa un flush al fer el close de oos
             System.out.println("Enviat");
