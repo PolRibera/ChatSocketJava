@@ -83,3 +83,28 @@ S’ha conectat aquesta ip al servidor: /192.168.157.5
 S’ha xifrat una contrasenya.
 El usuari:pol ha iniciat sesio.
 S’ha conectat aquesta ip al servidor: /192.168.157.5
+S’ha conectat aquesta ip al servidor: /192.168.157.5
+S’ha xifrat una contrasenya.
+S’ha registrat un nou usuari: test
+S’ha xifrat una contrasenya.
+El usuari:test ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.157.5
+S’ha xifrat una contrasenya.
+El usuari:test ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.157.5
+S’ha xifrat una contrasenya.
+El usuari:test ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.157.74
+S’ha xifrat una contrasenya.
+El usuari:pol ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.157.5
+S’ha xifrat una contrasenya.
+El usuari:pol ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /127.0.0.1
+S’ha xifrat una contrasenya.
+S’ha conectat aquesta ip al servidor: /127.0.0.1
+S’ha xifrat una contrasenya.
+El usuari:alex1234 ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /127.0.0.1
+S’ha xifrat una contrasenya.
+El usuari:raul ha iniciat sesio.

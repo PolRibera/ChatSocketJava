@@ -26,6 +26,7 @@ import java.util.Scanner;
 public class Cliente {
 
     public static Scanner sc = new Scanner(System.in);
+    public static Scanner sc1 = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
@@ -85,12 +86,13 @@ public class Cliente {
 
         String[] opXat = {
             "",
-            "Opcions Xat                        ",
+            "Xat                                ",
             "",
-            "1.- [Enviar Missatge]              ",
-            "2.- [Rebre Missatge]               ",
-            "3.- [Llistar usuaris]              ",
-            "4.- [Menu principal]               ",
+            "1.- [Enviar missatge]              ",
+            "2.- [Enviar missatge a grup]       ",
+            "3.- [Llegir missatge]              ",
+            "4.- [Llegir missatge d'un grup]    ",
+            "5.- [Menu principal]               ",
             "",};
 
         String[] confServidor = {
@@ -121,7 +123,7 @@ public class Cliente {
 
         System.out.println("Inicia cliente");
 
-        Socket sk = new Socket("192.168.157.74", 54322); //accepta una conexión
+        Socket sk = new Socket("localhost", 54322); //accepta una conexión
 
         DataOutputStream dos = new DataOutputStream(sk.getOutputStream());
         DataInputStream dis = new DataInputStream(sk.getInputStream());
@@ -317,30 +319,80 @@ public class Cliente {
                                     break;
                                 case 3:
                                     boolean xat = false;
+                                    String resposta;
                                     while (!xat) {
                                         gui(opXat);
-                                        System.out.print("Introdueix una opció: ");
+                                        System.out.println("Introdueix una opció: ");
                                         s1 = sc.next();
                                         dos.writeUTF(s1);
                                         switch (Integer.parseInt(s1)) {
                                             case 1:
-                                                System.out.print("Introdueix el misatge que vols enviar: ");
-
-                                                break;
-                                            case 2:
-                                                System.out.print("Rebent missatges.... ");
-
-                                                break;
-                                            case 3:
-                                                System.out.println("Llista usuaris: ");
-
-                                                break;
-                                            case 4:
-                                                if (dis.readUTF().equals("true")) {
-                                                    xat = true;
+                                                System.out.println("Introdueix receptor");
+                                                s1 = sc1.nextLine();
+                                                dos.writeUTF(s1);
+                                                System.out.println("Introdueix missatge");
+                                                s1 = sc1.nextLine();
+                                                dos.writeUTF(s1);
+                                                resposta = dis.readUTF();
+                                                if (resposta.equals("correcte")) {
+                                                    System.out.println("Missatge enviat");
+                                                } else if (resposta.equals("usuario")) {
+                                                    System.out.println("El usuari no existeix");
                                                 }
                                                 break;
+                                            case 2:
+                                                System.out.println("Introdueix grup");
+                                                s1 = sc1.nextLine();
+                                                dos.writeUTF(s1);
+                                                System.out.println("Introdueix missatge");
+                                                s1 = sc1.nextLine();
+                                                dos.writeUTF(s1);
+                                                resposta = dis.readUTF();
+                                                if (resposta.equals("correcte")) {
+                                                    System.out.println("Missatge enviat");
+                                                } else if (resposta.equals("grupo")) {
+                                                    System.out.println("El grup no existeix");
+                                                } else if (resposta.equals("usuario")) {
+                                                    System.out.println("El teu usuari no pertany al grup");
+                                                }
+                                                break;
+                                            case 3:
+                                                resposta = dis.readUTF();
+                                                if (resposta.equals("correcto")) {
+                                                    int contador = Integer.parseInt(dis.readUTF());
+                                                    String mensaje;
+                                                    for (int i = 0; i < contador; i++) {
+                                                        mensaje = dis.readUTF();
+                                                        System.out.println(mensaje);
+                                                    }
+                                                } else if (resposta.equals("mensajes")) {
+                                                    System.out.println("No hi han missatges");
+                                                }
+                                                break;
+                                            case 4:
+                                                System.out.println("Introdueix grup");
+                                                s1 = sc.next();
+                                                dos.writeUTF(s1);
+                                                resposta = dis.readUTF();
+                                                if (resposta.equals("correcto")) {
 
+                                                    int contador = Integer.parseInt(dis.readUTF());
+                                                    String mensaje;
+                                                    for (int i = 0; i < contador; i++) {
+                                                        mensaje = dis.readUTF();
+                                                        System.out.println(mensaje);
+                                                    }
+                                                } else if (resposta.equals("mensajes")) {
+                                                    System.out.println("No hi han missatges");
+                                                } else if (resposta.equals("grupo")) {
+                                                    System.out.println("El grup no existeix");
+                                                } else if (resposta.equals("usuario")) {
+                                                    System.out.println("No pertanys a aquest grup");
+                                                }
+                                                break;
+                                            case 5:
+                                                xat = true;
+                                                break;
                                         }
                                     }
                                     break;

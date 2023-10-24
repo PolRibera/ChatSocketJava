@@ -164,19 +164,32 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                 }
                                                 break;
                                             case 3:
-                                                boolean opxat = false;
-                                                while (!opxat) {
+                                                boolean xat = false;
+                                                String receptor,
+                                                 grup,
+                                                 missatge;
+                                                while (!xat) {
                                                     respostaUsuariRebut = dis.readUTF();
                                                     switch (Integer.parseInt(respostaUsuariRebut)) {
                                                         case 1:
+                                                            receptor = dis.readUTF();
+                                                            missatge = dis.readUTF();
+                                                            enviarMisatge(receptor, missatge, idUsuari, dos);
                                                             break;
                                                         case 2:
+                                                            grup = dis.readUTF();
+                                                            missatge = dis.readUTF();
+                                                            enviarMisatgeGrup(grup, missatge, idUsuari, dos);
                                                             break;
                                                         case 3:
+                                                            llegirMisatge(idUsuari, dos);
                                                             break;
                                                         case 4:
-                                                            dos.writeUTF("true");
-                                                            opxat=true;
+                                                            grup = dis.readUTF();
+                                                            llegirMisatgeGrup(idUsuari, grup, dos);
+                                                            break;
+                                                        case 5:
+                                                            xat = true;
                                                             break;
                                                     }
                                                 }
@@ -687,6 +700,115 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             System.out.println("Enviat");
         } catch (IOException e1) {
             e1.printStackTrace();
+        }
+    }
+    public static void enviarMisatge(String receptorUsuario, String mensaje, String idUsuari, DataOutputStream dos) throws IOException, SQLException {
+        try {
+            PreparedStatement st1 = cn.prepareStatement("SELECT idusuario FROM usuario WHERE idusuario = ?;");
+            st1.setString(1, receptorUsuario);
+            ResultSet rs1 = st1.executeQuery();
+            if (rs1.next()) {
+                PreparedStatement st2 = cn.prepareStatement("INSERT INTO mensajes_usuario(mensaje, idemisor, idremitente) VALUES (?, ?, ?);");
+                st2.setString(1, mensaje);
+                st2.setString(2, idUsuari);
+                st2.setString(3, receptorUsuario);
+                st2.executeUpdate();
+                dos.writeUTF("correcte");
+            } else {
+                dos.writeUTF("usuario");
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void enviarMisatgeGrup(String grupo, String mensaje, String idUsuari, DataOutputStream dos) throws IOException, SQLException {
+        try {
+            PreparedStatement st1 = cn.prepareStatement("SELECT idgrupo FROM grupo WHERE idgrupo = ?;");
+            st1.setString(1, grupo);
+            ResultSet rs1 = st1.executeQuery();
+            if (rs1.next()) {
+                PreparedStatement st2 = cn.prepareStatement("SELECT idusuario FROM grupo_usuario WHERE idgrupo = ? AND idusuario = ?;");
+                st2.setString(1, grupo);
+                st2.setString(2, idUsuari);
+                ResultSet rs2 = st2.executeQuery();
+                if (rs2.next()) {
+                    PreparedStatement st3 = cn.prepareStatement("INSERT INTO mensaje_grupo(mensaje, idemisor, idgrupo) VALUES (?, ?, ?);");
+                    st3.setString(1, mensaje);
+                    st3.setString(2, idUsuari);
+                    st3.setString(3, grupo);
+                    st3.executeUpdate();
+                    dos.writeUTF("correcte");
+                } else {
+                    dos.writeUTF("usuario");
+                }
+            } else {
+                dos.writeUTF("grupo");
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void llegirMisatge(String idUsuari, DataOutputStream dos) throws SQLException {
+        try {
+            ArrayList<String> missatges = new ArrayList<>();
+            PreparedStatement st1 = cn.prepareStatement("SELECT * FROM mensajes_usuario WHERE idremitente = ?;");
+            st1.setString(1, idUsuari);
+            ResultSet rs1 = st1.executeQuery();
+            if (rs1.next()) {
+                dos.writeUTF("correcto");
+                do {
+                    missatges.add("Missatge " + rs1.getString("fecha") + " de " + rs1.getString("idemisor") + ": " + rs1.getString("mensaje"));
+                } while (rs1.next());
+                dos.writeUTF(Integer.toString(missatges.size()));
+                for (int i = 0; i < missatges.size(); i++) {
+                    dos.writeUTF(missatges.get(i));
+                }
+            } else {
+                dos.writeUTF("mensajes");
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void llegirMisatgeGrup(String idUsuari, String grup, DataOutputStream dos) throws SQLException {
+        try {
+            ArrayList<String> missatges = new ArrayList<>();
+            PreparedStatement st1 = cn.prepareStatement("SELECT idgrupo FROM grupo WHERE idgrupo = ?;");
+            st1.setString(1, grup);
+            ResultSet rs1 = st1.executeQuery();
+            if (rs1.next()) {
+                PreparedStatement st2 = cn.prepareStatement("SELECT idusuario FROM grupo_usuario WHERE idusuario = ? AND idgrupo = ?;");
+                st2.setString(1, idUsuari);
+                st2.setString(2, grup);
+                ResultSet rs2 = st2.executeQuery();
+                if (rs2.next()) {
+                    PreparedStatement st3 = cn.prepareStatement("SELECT * FROM mensaje_grupo WHERE idgrupo = ?;");
+                    st3.setString(1, grup);
+                    ResultSet rs3 = st3.executeQuery();
+                    if (rs3.next()) {
+                        dos.writeUTF("correcto");
+                        do {
+                            missatges.add("Missatge  " + rs3.getString("fecha") + " de " + rs3.getString("idemisor") + ": " + rs3.getString("mensaje"));
+                        } while (rs1.next());
+                        dos.writeUTF(Integer.toString(missatges.size()));
+                        for (int i = 0; i < missatges.size(); i++) {
+                            dos.writeUTF(missatges.get(i));
+                        }
+                    } else {
+                        dos.writeUTF("mensaje");
+                    }
+                } else {
+                    dos.writeUTF("usuario");
+                }
+
+            } else {
+                dos.writeUTF("grupo");
+            }
+        } catch (IOException e) {
+            System.out.println(e);
         }
     }
 }
