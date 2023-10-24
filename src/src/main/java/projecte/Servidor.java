@@ -72,6 +72,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                         case 1:
                             if (esCorrectoDriver()) {
                                 cn = obtenerCon();
+                                dos.writeUTF("maricon");
                                 String idUsuari = dis.readUTF();
                                 String contrasenya = dis.readUTF();
                                 if (iniciSesio(idUsuari, contrasenya)) {
@@ -757,7 +758,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             st1.setString(1, idUsuari);
             ResultSet rs1 = st1.executeQuery();
             if (rs1.next()) {
-                dos.writeUTF("correcto");
+                dos.writeUTF("correctomen");
                 do {
                     missatges.add("Missatge " + rs1.getString("fecha") + " de " + rs1.getString("idemisor") + ": " + rs1.getString("mensaje"));
                 } while (rs1.next());
@@ -789,7 +790,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                     st3.setString(1, grup);
                     ResultSet rs3 = st3.executeQuery();
                     if (rs3.next()) {
-                        dos.writeUTF("correcto");
+                        dos.writeUTF("correctomengrup");
                         do {
                             missatges.add("Missatge  " + rs3.getString("fecha") + " de " + rs3.getString("idemisor") + ": " + rs3.getString("mensaje"));
                         } while (rs1.next());

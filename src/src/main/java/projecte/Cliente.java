@@ -358,7 +358,7 @@ public class Cliente {
                                                 break;
                                             case 3:
                                                 resposta = dis.readUTF();
-                                                if (resposta.equals("correcto")) {
+                                                if (resposta.equals("correctomen")) {
                                                     int contador = Integer.parseInt(dis.readUTF());
                                                     String mensaje;
                                                     for (int i = 0; i < contador; i++) {
@@ -374,7 +374,7 @@ public class Cliente {
                                                 s1 = sc.next();
                                                 dos.writeUTF(s1);
                                                 resposta = dis.readUTF();
-                                                if (resposta.equals("correcto")) {
+                                                if (resposta.equals("correctomengrup")) {
 
                                                     int contador = Integer.parseInt(dis.readUTF());
                                                     String mensaje;
@@ -512,6 +512,9 @@ public class Cliente {
                     System.out.println("Introdueix contrasenya d'usuari:");
                     String contraseñaC = sc.next();
                     dos.writeUTF(contraseñaC);
+                    if (dis.readUTF().equals("correcto")) {
+                        System.out.println("S'ha creat correctament el usuari");
+                    }
                     break;
                 case 3:
                     if (dis.readUTF().equals("true")) {

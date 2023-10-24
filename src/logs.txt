@@ -108,3 +108,55 @@ El usuari:alex1234 ha iniciat sesio.
 S’ha conectat aquesta ip al servidor: /127.0.0.1
 S’ha xifrat una contrasenya.
 El usuari:raul ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+S’ha conectat aquesta ip al servidor: /127.0.0.1
+S’ha xifrat una contrasenya.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+S’ha registrat un nou usuari: prueba
+S’ha xifrat una contrasenya.
+El usuari:prueba ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+El usuari:prueba ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+S’ha registrat un nou usuari: hola
+S’ha xifrat una contrasenya.
+El usuari:hola ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+S’ha registrat un nou usuari: marica
+S’ha xifrat una contrasenya.
+El usuari:marica ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+El usuari:hola ha iniciat sesio.
+S’ha xifrat una contrasenya.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+S’ha registrat un nou usuari: holaa
+S’ha xifrat una contrasenya.
+El usuari:holaa ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.1.143
+S’ha xifrat una contrasenya.
+S’ha registrat un nou usuari: maricaaaa
+S’ha xifrat una contrasenya.
+El usuari:maricaaaa ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /127.0.0.1
+S’ha xifrat una contrasenya.
+S’ha registrat un nou usuari: m1
+S’ha conectat aquesta ip al servidor: /127.0.0.1
+S’ha xifrat una contrasenya.
+S’ha registrat un nou usuari: pol
+S’ha xifrat una contrasenya.
+El usuari:pol ha iniciat sesio.
