@@ -72,7 +72,6 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                         case 1:
                             if (esCorrectoDriver()) {
                                 cn = obtenerCon();
-                                dos.writeUTF("maricon");
                                 String idUsuari = dis.readUTF();
                                 String contrasenya = dis.readUTF();
                                 if (iniciSesio(idUsuari, contrasenya)) {
