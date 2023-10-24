@@ -121,7 +121,7 @@ public class Cliente {
 
         System.out.println("Inicia cliente");
 
-        Socket sk = new Socket("localhost", 54322); //accepta una conexión
+        Socket sk = new Socket("192.168.157.74", 54322); //accepta una conexión
 
         DataOutputStream dos = new DataOutputStream(sk.getOutputStream());
         DataInputStream dis = new DataInputStream(sk.getInputStream());
@@ -522,7 +522,7 @@ public class Cliente {
             String nomfichPrevi = nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
             long lfic = ois.readLong();
             
-            fo = new File("..\\fitxersClient\\"+nomfichPrevi);
+            fo = new File("..\\fitxersClient\\rebent_"+nomfichPrevi);
             fo.delete(); //Eliminem el fitxer per si ja existia d'abans
             fileOutput = new FileOutputStream(fo);
             bo = new BufferedOutputStream(fileOutput);

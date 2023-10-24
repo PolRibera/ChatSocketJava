@@ -150,7 +150,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                             // Utiliza tu función listarFicheros
                                                             break;
                                                         case 3: // Descargar archivo (cliente envía solicitud)
-                                                            String directorioDescarga = "../fitxersServer";
+                                                            String directorioDescarga = "..\\fitxersServer";
                                                             dos.writeUTF(directorioDescarga);// Directorio en el servidor donde se encuentran los archivos a descargar
                                                             listarFicheros(directorioDescarga, dos); // Utiliza tu función listarFicheros
                                                             String archivoDescargar = dis.readUTF(); // Nombre del archivo que el cliente desea descargar
