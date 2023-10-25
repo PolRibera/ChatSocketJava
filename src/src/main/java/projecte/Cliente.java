@@ -160,6 +160,8 @@ public class Cliente {
                             System.out.println("Has iniciat sesió.");
 
                             break;
+                        }else if(repServidor.equals("conectat")){
+                            System.out.println("Aquest usuari ya esta conectat");
                         }
 
                     }

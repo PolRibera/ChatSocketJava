@@ -79,7 +79,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                 while (!sesion) {
                                     idUsuari = dis.readUTF();
                                     contrasenya = dis.readUTF();
-                                    System.out.println(idUsuari + contrasenya);
+                                    if (!usuariosConectados.containsKey(idUsuari)) {
                                     sesion = iniciSesio(idUsuari, contrasenya);
                                     if (sesion == false) {
                                         cont++;
@@ -91,6 +91,9 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                         }
                                     } else {
                                         break;
+                                    }
+                                }else{
+                                        dos.writeUTF("conectat");
                                     }
                                 }
                                 if (sesion == true) {
@@ -292,12 +295,12 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                     }
                                                 }
                                                 break;
-                                                
+
                                             case 6:
                                                 llistarusuaris(dos);
-                                                llistarusuarisconectats(dos,usuariosConectados);
+                                                llistarusuarisconectats(dos, usuariosConectados);
                                                 break;
-                                                
+
                                             case 7:
                                                 dos.writeUTF("true");
                                                 sortirSesio = true;
@@ -354,7 +357,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         }
     }
 
-    private static boolean iniciSesio(String idUsuario, String contrasenya) {
+    private static boolean iniciSesio(String idUsuario, String contrasenya) throws SQLException {
         try {
             PreparedStatement st = cn.prepareStatement("SELECT * FROM usuario WHERE idusuario = ? AND contraseña = ?");
             st.setString(1, idUsuario);
@@ -369,6 +372,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 System.out.println("No ha iniciado sesion");
                 logs("El usuari " + idUsuario + " no ha pogut iniciar sesió.");
             }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
