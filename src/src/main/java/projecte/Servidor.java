@@ -292,9 +292,16 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                     }
                                                 }
                                                 break;
+                                                
                                             case 6:
+                                                llistarusuaris(dos);
+                                                llistarusuarisconectats(dos,usuariosConectados);
+                                                break;
+                                                
+                                            case 7:
                                                 dos.writeUTF("true");
                                                 sortirSesio = true;
+                                                usuariosConectados.remove(idUsuari);
                                                 break;
                                         }
                                     }
@@ -836,7 +843,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             if (rs1.next()) {
                 dos.writeUTF("correcto");
                 do {
-                    usuaris.add("Missatge " + rs1.getString("fecha") + " de " + rs1.getString("idemisor") + ": " + rs1.getString("mensaje"));
+                    usuaris.add(rs1.getString("idusuario"));
                 } while (rs1.next());
                 dos.writeUTF(Integer.toString(usuaris.size()));
                 for (int i = 0; i < usuaris.size(); i++) {
@@ -850,25 +857,13 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             System.out.println(e);
         }
     }
-    
-    public static void llistarusuarisconectats(DataOutputStream dos) throws SQLException {
-        try {
-            ArrayList<String> usuaris = new ArrayList<>();
-            PreparedStatement st1 = cn.prepareStatement("SELECT idusuario FROM usuario;");
-            ResultSet rs1 = st1.executeQuery();
-            if (rs1.next()) {
-                dos.writeUTF("correcto");
-                do {
-                    usuaris.add("Missatge " + rs1.getString("fecha") + " de " + rs1.getString("idemisor") + ": " + rs1.getString("mensaje"));
-                } while (rs1.next());
-                dos.writeUTF(Integer.toString(usuaris.size()));
-                for (int i = 0; i < usuaris.size(); i++) {
-                    dos.writeUTF(usuaris.get(i));
-                }
-            } else {
-                dos.writeUTF("usuario");
-            }
 
+    public static void llistarusuarisconectats(DataOutputStream dos, HashMap<String, Socket> usuarisconectats) throws SQLException {
+        try {
+            dos.writeUTF(Integer.toString(usuarisconectats.size()));
+            for (String key : usuarisconectats.keySet()) {
+                dos.writeUTF(key);
+            }
         } catch (IOException e) {
             System.out.println(e);
         }

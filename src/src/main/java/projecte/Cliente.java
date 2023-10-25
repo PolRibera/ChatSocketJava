@@ -172,7 +172,8 @@ public class Cliente {
                         "3.- [Opcions xat]                  ",
                         "4.- [Configuració servidor]        ",
                         "5.- [Configuració client]          ",
-                        "6.- [Sign out]                     ",
+                        "6.- [Llistar usuaris]              ",
+                        "7.- [Sign out]                     ",
                         "",};
                     if (repServidor.equals("true")) {
                         Thread.sleep(500);
@@ -481,7 +482,34 @@ public class Cliente {
                                             break;
                                     }
                                     break;
+                                    
                                 case 6:
+                                    System.out.println("Usuaris globals: ");
+                                    if (dis.readUTF().equals("correcto")) {
+                                        int usuarisglob = Integer.parseInt(dis.readUTF());
+                                        String usuarisg = "";
+                                     for (int i = 0; i < usuarisglob; i++) {
+                                        usuarisg+=dis.readUTF()+", ";
+                                        }
+                                        System.out.println(usuarisg);
+                                        System.out.println("\nUsuaris conectats: ");
+                                     int usuariscon = Integer.parseInt(dis.readUTF());
+                                     if(usuariscon != 0){
+                                         String usuarisco = "";
+                                         for (int i = 0; i < usuariscon; i++) {
+                                             usuarisco += dis.readUTF()+", ";
+                                         }
+                                         System.out.println(usuarisco);
+                                     }else{
+                                         System.out.println("No hi han usuaris conectas");
+                                     }
+                                    }else if(dis.readUTF().equals("usuario")){
+                                        System.out.println("No hi han usuaris");
+                                    }
+                                    
+                                    break;
+                                    
+                                case 7:
                                     if (dis.readUTF().equals("true")) {
                                         SortirMenu = true;
                                     }

@@ -189,3 +189,15 @@ El usuari:pol ha iniciat sesio.
 S�ha conectat aquesta ip al servidor: /192.168.1.143
 S�ha xifrat una contrasenya.
 El usuari:pol ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /127.0.0.1
+S’ha xifrat una contrasenya.
+El usuari:alex1234 ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /127.0.0.1
+S’ha xifrat una contrasenya.
+El usuari:alex1234 ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /127.0.0.1
+S’ha xifrat una contrasenya.
+El usuari:alex1234 ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /127.0.0.1
+S’ha xifrat una contrasenya.
+El usuari:raul ha iniciat sesio.
