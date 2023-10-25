@@ -22,7 +22,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
     private static String HOST = "localhost";
     private static String DATABASE = "projectexat";
     private static String USER = "root";
-    private static String PASSWORD = "admin";
+    private static String PASSWORD = "1234";
 
     public static Properties propertiesServer;
     public static Properties propertiesClient;
@@ -98,6 +98,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                 }
                                 if (sesion == true) {
                                     usuariosConectados.put(idUsuari, sk);
+                                    System.out.println("El usuari "+idUsuari+" ha iniciat sesio!");
                                     boolean sortirSesio = false;
                                     dos.writeUTF("true");
                                     while (!sortirSesio) {
@@ -107,7 +108,6 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                 String idgrupo;
                                                 boolean grupo = false;
                                                 while (!grupo) {
-                                                    System.out.println("grupo");
                                                     respostaUsuariRebut = dis.readUTF();
                                                     switch (Integer.parseInt(respostaUsuariRebut)) {
                                                         case 1:
@@ -121,7 +121,6 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                                 String usuarinou;
                                                                 boolean adgrup = false;
                                                                 while (!adgrup) {
-                                                                    System.out.println("adgrup");
                                                                     respostaUsuariRebut = dis.readUTF();
                                                                     switch (Integer.parseInt(respostaUsuariRebut)) {
                                                                         case 1:
@@ -394,9 +393,11 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             if (!rs1.next()) {
                 st.executeUpdate();
                 dos.writeUTF("correcto");
+                System.out.println("S’ha registrat un nou usuari: " + idusuario);
                 logs("S’ha registrat un nou usuari: " + idusuario);
             } else {
                 dos.writeUTF("usuario");
+                System.out.println("No se ha podido registrar el usuario porque coincide con un nombre de la base de datos.");
                 logs("No se ha podido registrar el usuario porque coincide con un nombre de la base de datos.");
             }
         } catch (SQLException e) {
@@ -416,8 +417,10 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 st2.executeUpdate();
                 dos.writeUTF("correcte");
                 logs("El usuario " + idusuario + " ha creado el grupo " + idgrupo + " correctamente. ");
+                System.out.println("El usuario " + idusuario + " ha creado el grupo " + idgrupo + " correctamente. ");
             } else {
                 dos.writeUTF("grupo");
+                System.out.println("El usuario " + idusuario + " ha intentado crear  el grupo " + idgrupo + " pero ya hay un gurpo que se llama asi.");
                 logs("El usuario " + idusuario + " ha intentado crear  el grupo " + idgrupo + " pero ya hay un gurpo que se llama asi.");
             }
         } catch (SQLException e) {
@@ -440,13 +443,16 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                     st3.setString(1, idgrupo);
                     st3.execute();
                     dos.writeUTF("correcte");
+                    System.out.println("El usuario " + idusuario + " ha eliminado el grupo " + idgrupo + " correctamente. ");
                     logs("El usuario " + idusuario + " ha eliminado el grupo " + idgrupo + " correctamente. ");
                 } else {
                     dos.writeUTF("admin");
+                    System.out.println("El usuario " + idusuario + " ha intentado eliminar el grupo " + idgrupo + " pero no es el administrador ");
                     logs("El usuario " + idusuario + " ha intentado eliminar el grupo " + idgrupo + " pero no es el administrador ");
                 }
             } else {
                 dos.writeUTF("grup");
+                System.out.println("El grup " + idgrupo + " no existeix.");
                 logs("El grup " + idgrupo + " no existeix.");
             }
         } catch (SQLException e) {
@@ -500,6 +506,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                     st3.setString(2, idusuario);
                     st3.executeUpdate();
                     dos.writeUTF("correcte");
+                    System.out.println("S'ha afegit correctament el usuari "+idusuario+" al grup "+idgrupo);
                 }
 
             } else {
@@ -527,6 +534,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                     st3.setString(1, idgrupo);
                     st3.setString(2, idusuario);
                     st3.executeUpdate();
+                    System.out.println("Usuari "+idusuario+" borrat del grup "+idgrupo);
                     dos.writeUTF("correcte");
                 } else {
                     dos.writeUTF("relacio");
@@ -553,6 +561,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             for (int i = 0; i < membres.size(); i++) {
                 dos.writeUTF(membres.get(i));
             }
+            System.out.println("Se ha listado los usuarios de este grupo: " + idgrupo);
             logs("Se ha listado los usuarios de este grupo: " + idgrupo);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -601,14 +610,17 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 dos.writeUTF("Enviado: " + mensaje);
                 System.out.println("Mensaje enviado");
                 logs("El usuari " + idUsuari + " ha enviat un misatge al usuari " + receptorUsuario);
+                System.out.println("El usuari " + idUsuari + " ha enviat un misatge al usuari " + receptorUsuario);
             } catch (IOException e) {
                 e.printStackTrace();
                 dos.writeUTF("Error al enviar el mensaje al usuario receptor");
                 logs("El usuari " + idUsuari + " ha enviat un misatge al usuari " + receptorUsuario + " pero no li ha arribat");
+                System.out.println("El usuari " + idUsuari + " ha enviat un misatge al usuari " + receptorUsuario + " pero no li ha arribat");
             }
         } else {
             dos.writeUTF("El usuario receptor no está conectado");
             logs("El usuari " + idUsuari + " ha intentat enviar un misatge al usuari " + receptorUsuario + " pero no esta conectat.");
+            System.out.println("El usuari " + idUsuari + " ha intentat enviar un misatge al usuari " + receptorUsuario + " pero no esta conectat.");
         }
     }
 
@@ -662,7 +674,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             File nufile = new File("..\\fitxersServer\\" + nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
             nufile.delete();
             fo.renameTo(nufile);
-            System.out.println("Rebut");
+            System.out.println("Fitxer descarregat "+nomfich);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -700,7 +712,6 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
 
         try {
             File fi = new File(nomfich);
-            System.out.println(nomfich);
             FileInputStream fileInput = new FileInputStream(fi);
             BufferedInputStream bi = new BufferedInputStream(fileInput);
             long lfic = fi.length();
@@ -723,7 +734,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 out.write(b, 0, resto); // l'enviem
             }
             //oos.flush(); //no cal, es fa un flush al fer el close de oos
-            System.out.println("Enviat");
+            System.out.println("Enviat fitxer "+nomfich);
         } catch (IOException e1) {
             e1.printStackTrace();
         }

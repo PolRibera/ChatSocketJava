@@ -213,3 +213,22 @@ El usuari:raul ha iniciat sesio.
 Sâ€™ha conectat aquesta ip al servidor: /127.0.0.1
 Sâ€™ha xifrat una contrasenya.
 El usuari:alex1234 ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.157.5
+S’ha xifrat una contrasenya.
+S’ha registrat un nou usuari: riky
+S’ha xifrat una contrasenya.
+El usuari:riky ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.157.39
+S’ha xifrat una contrasenya.
+El usuari:alex1234 ha iniciat sesio.
+El usuario alex1234 ha creado el grupo Test1 correctamente. 
+Se ha listado los usuarios de este grupo: Test1
+S’ha conectat aquesta ip al servidor: /192.168.157.39
+S’ha xifrat una contrasenya.
+El usuari:alex1234 ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.157.5
+S’ha xifrat una contrasenya.
+El usuari:riky ha iniciat sesio.
+S’ha conectat aquesta ip al servidor: /192.168.157.5
+S’ha xifrat una contrasenya.
+El usuari:alex1234 ha iniciat sesio.
