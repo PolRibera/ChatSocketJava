@@ -123,7 +123,7 @@ public class Cliente {
 
         System.out.println("Inicia cliente");
 
-        Socket sk = new Socket("localhost", 54322); //accepta una conexión
+        Socket sk = new Socket("192.168.157.74", 54322); //accepta una conexión
 
         DataOutputStream dos = new DataOutputStream(sk.getOutputStream());
         DataInputStream dis = new DataInputStream(sk.getInputStream());
@@ -232,8 +232,16 @@ public class Cliente {
                                                     boolean adgrup = false;
                                                     while (!adgrup) {
                                                         gui(adminGrup);
-                                                        s1 = sc.next();
-                                                        dos.writeUTF(s1);
+                                                        while (!numcorrecte) {
+                                                            System.out.println("Introdueix una opció: ");
+                                                            s1 = sc.next();
+                                                            if (detectarint(s1)) {
+                                                                dos.writeUTF(s1);
+                                                                numcorrecte = true;
+                                                            } else {
+                                                                System.out.println("Formato incorrecto");
+                                                            }
+                                                        }
                                                         switch (Integer.parseInt(s1)) {
                                                             case 1:
                                                                 System.out.println("Nom d'usuari: ");
