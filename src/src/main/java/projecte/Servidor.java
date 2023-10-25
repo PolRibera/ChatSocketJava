@@ -827,4 +827,50 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             System.out.println(e);
         }
     }
+
+    public static void llistarusuaris(DataOutputStream dos) throws SQLException {
+        try {
+            ArrayList<String> usuaris = new ArrayList<>();
+            PreparedStatement st1 = cn.prepareStatement("SELECT idusuario FROM usuario;");
+            ResultSet rs1 = st1.executeQuery();
+            if (rs1.next()) {
+                dos.writeUTF("correcto");
+                do {
+                    usuaris.add("Missatge " + rs1.getString("fecha") + " de " + rs1.getString("idemisor") + ": " + rs1.getString("mensaje"));
+                } while (rs1.next());
+                dos.writeUTF(Integer.toString(usuaris.size()));
+                for (int i = 0; i < usuaris.size(); i++) {
+                    dos.writeUTF(usuaris.get(i));
+                }
+            } else {
+                dos.writeUTF("usuario");
+            }
+
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+    
+    public static void llistarusuarisconectats(DataOutputStream dos) throws SQLException {
+        try {
+            ArrayList<String> usuaris = new ArrayList<>();
+            PreparedStatement st1 = cn.prepareStatement("SELECT idusuario FROM usuario;");
+            ResultSet rs1 = st1.executeQuery();
+            if (rs1.next()) {
+                dos.writeUTF("correcto");
+                do {
+                    usuaris.add("Missatge " + rs1.getString("fecha") + " de " + rs1.getString("idemisor") + ": " + rs1.getString("mensaje"));
+                } while (rs1.next());
+                dos.writeUTF(Integer.toString(usuaris.size()));
+                for (int i = 0; i < usuaris.size(); i++) {
+                    dos.writeUTF(usuaris.get(i));
+                }
+            } else {
+                dos.writeUTF("usuario");
+            }
+
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
 }
