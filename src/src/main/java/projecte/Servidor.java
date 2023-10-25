@@ -22,7 +22,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
     private static String HOST = "localhost";
     private static String DATABASE = "projectexat";
     private static String USER = "root";
-    private static String PASSWORD = "1234";
+    private static String PASSWORD = "admin";
 
     public static Properties propertiesServer;
     public static Properties propertiesClient;
@@ -72,9 +72,28 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                         case 1:
                             if (esCorrectoDriver()) {
                                 cn = obtenerCon();
-                                String idUsuari = dis.readUTF();
-                                String contrasenya = dis.readUTF();
-                                if (iniciSesio(idUsuari, contrasenya)) {
+                                boolean sesion = false;
+                                int cont = 0;
+                                String idUsuari = "";
+                                String contrasenya = "";
+                                while (!sesion) {
+                                    idUsuari = dis.readUTF();
+                                    contrasenya = dis.readUTF();
+                                    System.out.println(idUsuari + contrasenya);
+                                    sesion = iniciSesio(idUsuari, contrasenya);
+                                    if (sesion == false) {
+                                        cont++;
+                                        dos.writeUTF("false");
+                                        if (cont == 3) {
+                                            System.out.println("Cliente desconectado por sobrepasar intentos");
+                                            sortir = true;
+                                            break;
+                                        }
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                if (sesion == true) {
                                     usuariosConectados.put(idUsuari, sk);
                                     boolean sortirSesio = false;
                                     dos.writeUTF("true");
@@ -146,7 +165,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                             descaregarFitxer(sk, dis, sk.getInputStream()); // Utiliza tu función descaregarFitxer
                                                             // Realiza alguna lógica adicional si es necesario con el archivo recibido
                                                             break;
-                                                        case 2: 
+                                                        case 2:
                                                             break;
                                                         case 3: // Descargar archivo (cliente envía solicitud)
                                                             String directorioDescarga = "..\\fitxersServer";
@@ -279,13 +298,8 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                 break;
                                         }
                                     }
-                                } else {
-                                    dos.writeUTF("false");
-
                                 }
                             }
-                            ;
-
                             break;
                         case 2:
                             if (esCorrectoDriver()) {
@@ -303,7 +317,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                             break;
                     }
                 }
-            }  catch (SQLException ex) {
+            } catch (SQLException ex) {
                 Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
@@ -340,8 +354,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             String hash = cifrar(contrasenya);
             st.setString(2, hash);
             ResultSet rs = st.executeQuery();
-            rs.next();
-            if (rs.getString("idusuario").equals(idUsuario)) {
+            if (rs.next()) {
                 System.out.println("Login correcte");
                 logs("El usuari:" + idUsuario + " ha iniciat sesio.");
                 return true;
@@ -567,6 +580,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             throw new RuntimeException(e);
         }
     }
+
     public static void enviarMisatge(String receptorUsuario, String mensaje, DataOutputStream dos, String idUsuari, HashMap usuariosConectados) throws IOException {
         Socket receptorSocket = (Socket) usuariosConectados.get(receptorUsuario);
         if (receptorSocket != null) {
@@ -611,10 +625,10 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             String s[] = nomfich.split("[\\\\/]"); //per si acàs, treiem la ruta del nom del fitxer, per si s'ha posat
             nomfich = s[s.length - 1];
 
-            String nomfichPrevi =  nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
+            String nomfichPrevi = nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
             long lfic = ois.readLong();
 
-            fo = new File("..\\fitxersServer\\"+nomfichPrevi);
+            fo = new File("..\\fitxersServer\\" + nomfichPrevi);
             fo.delete(); //Eliminem el fitxer per si ja existia d'abans
             fileOutput = new FileOutputStream(fo);
             bo = new BufferedOutputStream(fileOutput);
@@ -634,7 +648,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                 lleva = lleva + leido; //per saber quants es porten llegits
             }
             //reanomena el fitxer
-            File nufile = new File("..\\fitxersServer\\"+nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
+            File nufile = new File("..\\fitxersServer\\" + nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
             nufile.delete();
             fo.renameTo(nufile);
             System.out.println("Rebut");
@@ -643,6 +657,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
         }
 
     }
+
     public static void listarFicheros(String directorio, DataOutputStream dos) throws IOException {
         File folder = new File(directorio);
         ArrayList<String> llistatFitxers = new ArrayList<>();
@@ -667,6 +682,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             dos.writeUTF("El directorio no existe o no es una carpeta.");
         }
     }
+
     public static void enviaEnBlocs(String nomfich, Socket sk, DataOutputStream oos, OutputStream out) throws IOException {
         int lbloc = 20000; //tamany del bloc --> sol ser múltiple de 256 bytes, però pot ser qualsevol valor
         // Aquest tamany no cal que sigui el mateix en el emisor que en el receptor.
@@ -701,6 +717,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
             e1.printStackTrace();
         }
     }
+
     public static void enviarMisatge(String receptorUsuario, String mensaje, String idUsuari, DataOutputStream dos) throws IOException, SQLException {
         try {
             PreparedStatement st1 = cn.prepareStatement("SELECT idusuario FROM usuario WHERE idusuario = ?;");

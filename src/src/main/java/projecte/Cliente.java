@@ -141,7 +141,7 @@ public class Cliente {
                     String repServidor = "";
                     String idUsuari = "";
                     gui(signIn);
-                    while (con <= 3) {
+                    while (con < 3) {
                         System.out.println("Introdueix nom d'usuari:");
                         idUsuari = sc.next();
                         dos.writeUTF(idUsuari);
@@ -152,7 +152,8 @@ public class Cliente {
                         if (repServidor.equals("false")) {
                             System.out.println("La contrasenya o el usuari son incorrectes.");
                             con++;
-                            if (con <= 3) {
+                            if (con == 3) {
+                                System.out.println("Desconexion por demasiados intentos");
                                 sortir = true;
                             }
                         } else if (repServidor.equals("true")) {
