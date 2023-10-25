@@ -111,7 +111,7 @@ public class Cliente {
 
         String[] confClient = {
             "",
-            "Configurar servidor                ",
+            "Configurar cliente                ",
             "",
             "1.- [Mostra configuracio actual]   ",
             "2.- [Cambiar nom client]           ",
@@ -123,7 +123,7 @@ public class Cliente {
 
         System.out.println("Inicia cliente");
 
-        Socket sk = new Socket("192.168.157.74", 54322); //accepta una conexión
+        Socket sk = new Socket("localhost", 54322); //accepta una conexión
 
         DataOutputStream dos = new DataOutputStream(sk.getOutputStream());
         DataInputStream dis = new DataInputStream(sk.getInputStream());
@@ -436,20 +436,20 @@ public class Cliente {
                                     }
                                     break;
                                 case 4:
-                                    gui(confServidor);
-                                    numcorrecte = false;
-                                    while (!numcorrecte) {
-                                        System.out.println("Introdueix una opció: ");
-                                        s1 = sc.next();
-                                        if (detectarint(s1)) {
-                                            dos.writeUTF(s1);
-                                            numcorrecte = true;
-                                        } else {
-                                            System.out.println("Formato incorrecto");
-                                        }
-                                    }
                                     boolean sortirConfigServer = false;
                                     while (!sortirConfigServer) {
+                                        gui(confServidor);
+                                        numcorrecte = false;
+                                        while (!numcorrecte) {
+                                            System.out.println("Introdueix una opció: ");
+                                            s1 = sc.next();
+                                            if (detectarint(s1)) {
+                                                dos.writeUTF(s1);
+                                                numcorrecte = true;
+                                            } else {
+                                                System.out.println("Formato incorrecto");
+                                            }
+                                        }
                                         switch (Integer.parseInt(s1)) {
                                             case 1:
                                                 System.out.println(dis.readUTF());

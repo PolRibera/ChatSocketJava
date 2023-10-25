@@ -22,7 +22,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
     private static String HOST = "localhost";
     private static String DATABASE = "projectexat";
     private static String USER = "root";
-    private static String PASSWORD = "1234";
+    private static String PASSWORD = "admin";
 
     public static Properties propertiesServer;
     public static Properties propertiesClient;
