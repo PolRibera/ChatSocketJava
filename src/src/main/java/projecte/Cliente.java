@@ -132,9 +132,18 @@ public class Cliente {
         boolean sortir = false;
         while (!sortir) {
             gui(pantallaInici);
-            System.out.println("Introdueix una opció: ");
-            String s1 = sc.next();
-            dos.writeUTF(s1);
+            boolean numcorrecte = false;
+            String s1 = "";
+            while (!numcorrecte) {
+                System.out.println("Introdueix una opció: ");
+                s1 = sc.next();
+                if (detectarint(s1)) {
+                    dos.writeUTF(s1);
+                    numcorrecte = true;
+                } else {
+                    System.out.println("Formato incorrecto");
+                }
+            }
             switch (Integer.parseInt(s1)) {
                 case 1:
                     int con = 0;
@@ -160,7 +169,7 @@ public class Cliente {
                             System.out.println("Has iniciat sesió.");
 
                             break;
-                        }else if(repServidor.equals("conectat")){
+                        } else if (repServidor.equals("conectat")) {
                             System.out.println("Aquest usuari ya esta conectat");
                         }
 
@@ -180,10 +189,19 @@ public class Cliente {
                     if (repServidor.equals("true")) {
                         Thread.sleep(500);
                         boolean SortirMenu = false;
-                        while (!SortirMenu){
+                        while (!SortirMenu) {
                             gui(pantallaPrincipal);
-                            s1 = sc.next();
-                            dos.writeUTF(s1);
+                            numcorrecte = false;
+                            while (!numcorrecte) {
+                                System.out.println("Introdueix una opció: ");
+                                s1 = sc.next();
+                                if (detectarint(s1)) {
+                                    dos.writeUTF(s1);
+                                    numcorrecte = true;
+                                } else {
+                                    System.out.println("Formato incorrecto");
+                                }
+                            }
                             switch (Integer.parseInt(s1)) {
                                 case 1:
                                     String idgrupo;
@@ -283,35 +301,43 @@ public class Cliente {
                                     boolean opFitxer = false;
                                     while (!opFitxer) {
                                         gui(opFitxers);
-                                        System.out.print("Introdueix una opció: ");
-                                        s1 = sc.next();
-                                        dos.writeUTF(s1);
-                                    switch (Integer.parseInt(s1)) {
-                                        case 1:
-                                            System.out.println("Introdueix el nom del fitxer a enviar:");
-                                            String nomFitxer = sc.next();
-                                            enviaEnBlocs(nomFitxer, sk, dos, sk.getOutputStream());
-                                            break;
-                                        case 2:
-                                            System.out.println("Opció en desenvolupament...");
-                                            break;
-                                        case 3:
-                                            String directorioDescarga = dis.readUTF();
-                                            int contador = Integer.parseInt(dis.readUTF());
-                                            for (int i = 0; i < contador; i++) {
-                                                System.out.println(dis.readUTF());
+                                        numcorrecte = false;
+                                        while (!numcorrecte) {
+                                            System.out.println("Introdueix una opció: ");
+                                            s1 = sc.next();
+                                            if (detectarint(s1)) {
+                                                dos.writeUTF(s1);
+                                                numcorrecte = true;
+                                            } else {
+                                                System.out.println("Formato incorrecto");
                                             }
-                                            System.out.println("Introdueix el nom del fitxer a descarregar:");
-                                            String nomFitxerDescarregar = sc.next();
-                                            dos.writeUTF(directorioDescarga+"\\"+nomFitxerDescarregar);
-                                            descaregarFitxer(sk, dis, sk.getInputStream());
-                                            break;
-                                        case 4:
-                                            if (dis.readUTF().equals("true")) {
-                                                opFitxer = true;
-                                            }
-                                            break;
-                                    }
+                                        }
+                                        switch (Integer.parseInt(s1)) {
+                                            case 1:
+                                                System.out.println("Introdueix el nom del fitxer a enviar:");
+                                                String nomFitxer = sc.next();
+                                                enviaEnBlocs(nomFitxer, sk, dos, sk.getOutputStream());
+                                                break;
+                                            case 2:
+                                                System.out.println("Opció en desenvolupament...");
+                                                break;
+                                            case 3:
+                                                String directorioDescarga = dis.readUTF();
+                                                int contador = Integer.parseInt(dis.readUTF());
+                                                for (int i = 0; i < contador; i++) {
+                                                    System.out.println(dis.readUTF());
+                                                }
+                                                System.out.println("Introdueix el nom del fitxer a descarregar:");
+                                                String nomFitxerDescarregar = sc.next();
+                                                dos.writeUTF(directorioDescarga + "\\" + nomFitxerDescarregar);
+                                                descaregarFitxer(sk, dis, sk.getInputStream());
+                                                break;
+                                            case 4:
+                                                if (dis.readUTF().equals("true")) {
+                                                    opFitxer = true;
+                                                }
+                                                break;
+                                        }
                                     }
                                     break;
                                 case 3:
@@ -319,9 +345,17 @@ public class Cliente {
                                     String resposta;
                                     while (!xat) {
                                         gui(opXat);
-                                        System.out.println("Introdueix una opció: ");
-                                        s1 = sc.next();
-                                        dos.writeUTF(s1);
+                                        numcorrecte = false;
+                                        while (!numcorrecte) {
+                                            System.out.println("Introdueix una opció: ");
+                                            s1 = sc.next();
+                                            if (detectarint(s1)) {
+                                                dos.writeUTF(s1);
+                                                numcorrecte = true;
+                                            } else {
+                                                System.out.println("Formato incorrecto");
+                                            }
+                                        }
                                         switch (Integer.parseInt(s1)) {
                                             case 1:
                                                 System.out.println("Introdueix receptor");
@@ -395,9 +429,17 @@ public class Cliente {
                                     break;
                                 case 4:
                                     gui(confServidor);
-                                    System.out.print("Introdueix una opció: ");
-                                    s1 = sc.next();
-                                    dos.writeUTF(s1);
+                                    numcorrecte = false;
+                                    while (!numcorrecte) {
+                                        System.out.println("Introdueix una opció: ");
+                                        s1 = sc.next();
+                                        if (detectarint(s1)) {
+                                            dos.writeUTF(s1);
+                                            numcorrecte = true;
+                                        } else {
+                                            System.out.println("Formato incorrecto");
+                                        }
+                                    }
                                     boolean sortirConfigServer = false;
                                     while (!sortirConfigServer) {
                                         switch (Integer.parseInt(s1)) {
@@ -450,9 +492,17 @@ public class Cliente {
                                     break;
                                 case 5:
                                     gui(confClient);
-                                    System.out.print("Introdueix una opció: ");
-                                    s1 = sc.next();
-                                    dos.writeUTF(s1);
+                                    numcorrecte = false;
+                                    while (!numcorrecte) {
+                                        System.out.println("Introdueix una opció: ");
+                                        s1 = sc.next();
+                                        if (detectarint(s1)) {
+                                            dos.writeUTF(s1);
+                                            numcorrecte = true;
+                                        } else {
+                                            System.out.println("Formato incorrecto");
+                                        }
+                                    }
                                     switch (Integer.parseInt(s1)) {
                                         case 1:
                                             System.out.println(dis.readUTF());
@@ -484,33 +534,33 @@ public class Cliente {
                                             break;
                                     }
                                     break;
-                                    
+
                                 case 6:
                                     System.out.println("Usuaris globals: ");
                                     if (dis.readUTF().equals("correcto")) {
                                         int usuarisglob = Integer.parseInt(dis.readUTF());
                                         String usuarisg = "";
-                                     for (int i = 0; i < usuarisglob; i++) {
-                                        usuarisg+=dis.readUTF()+", ";
+                                        for (int i = 0; i < usuarisglob; i++) {
+                                            usuarisg += dis.readUTF() + ", ";
                                         }
                                         System.out.println(usuarisg);
                                         System.out.println("\nUsuaris conectats: ");
-                                     int usuariscon = Integer.parseInt(dis.readUTF());
-                                     if(usuariscon != 0){
-                                         String usuarisco = "";
-                                         for (int i = 0; i < usuariscon; i++) {
-                                             usuarisco += dis.readUTF()+", ";
-                                         }
-                                         System.out.println(usuarisco);
-                                     }else{
-                                         System.out.println("No hi han usuaris conectas");
-                                     }
-                                    }else if(dis.readUTF().equals("usuario")){
+                                        int usuariscon = Integer.parseInt(dis.readUTF());
+                                        if (usuariscon != 0) {
+                                            String usuarisco = "";
+                                            for (int i = 0; i < usuariscon; i++) {
+                                                usuarisco += dis.readUTF() + ", ";
+                                            }
+                                            System.out.println(usuarisco);
+                                        } else {
+                                            System.out.println("No hi han usuaris conectas");
+                                        }
+                                    } else if (dis.readUTF().equals("usuario")) {
                                         System.out.println("No hi han usuaris");
                                     }
-                                    
+
                                     break;
-                                    
+
                                 case 7:
                                     if (dis.readUTF().equals("true")) {
                                         SortirMenu = true;
@@ -600,8 +650,8 @@ public class Cliente {
 
             String nomfichPrevi = nomfich; //El nom es canvia per saber que el fitxer encara no s'ha baixat del tot
             long lfic = ois.readLong();
-            
-            fo = new File("..\\fitxersClient\\"+nomfichPrevi);
+
+            fo = new File("..\\fitxersClient\\" + nomfichPrevi);
             fo.delete(); //Eliminem el fitxer per si ja existia d'abans
             fileOutput = new FileOutputStream(fo);
             bo = new BufferedOutputStream(fileOutput);
@@ -621,7 +671,7 @@ public class Cliente {
                 lleva = lleva + leido; //per saber quants es porten llegits
             }
             //reanomena el fitxer
-            File nufile = new File("..\\fitxersClient\\"+nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
+            File nufile = new File("..\\fitxersClient\\" + nomfich); //El fitxer ja està baixat. Se li ha de posar el nom final correcte. No li posem el que s'envia per si s'està provant al mateix ordinador
             nufile.delete();
             fo.renameTo(nufile);
             System.out.println("Rebut");
@@ -664,5 +714,17 @@ public class Cliente {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+    }
+
+    public static boolean detectarint(String lectura) {
+        if (lectura == null) {
+            return false;
+        }
+        try {
+            int numero = Integer.parseInt(lectura);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 }
