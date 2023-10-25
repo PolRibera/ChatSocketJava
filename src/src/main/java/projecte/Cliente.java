@@ -499,47 +499,53 @@ public class Cliente {
                                     }
                                     break;
                                 case 5:
-                                    gui(confClient);
-                                    numcorrecte = false;
-                                    while (!numcorrecte) {
-                                        System.out.println("Introdueix una opció: ");
-                                        s1 = sc.next();
-                                        if (detectarint(s1)) {
-                                            dos.writeUTF(s1);
-                                            numcorrecte = true;
-                                        } else {
-                                            System.out.println("Formato incorrecto");
+                                    boolean sortirConfigcli = false;
+                                    while (!sortirConfigcli) {
+                                        gui(confClient);
+                                        numcorrecte = false;
+                                        while (!numcorrecte) {
+                                            System.out.println("Introdueix una opció: ");
+                                            s1 = sc.next();
+                                            if (detectarint(s1)) {
+                                                dos.writeUTF(s1);
+                                                numcorrecte = true;
+                                            } else {
+                                                System.out.println("Formato incorrecto");
+                                            }
                                         }
-                                    }
-                                    switch (Integer.parseInt(s1)) {
-                                        case 1:
-                                            System.out.println(dis.readUTF());
-                                            System.out.println(dis.readUTF());
-                                            System.out.println(dis.readUTF());
-                                            System.out.println(dis.readUTF());
-                                            break;
-                                        case 2:
-                                            System.out.print("Introdueix el nou nom del client: ");
-                                            String nomClient = sc.next();
-                                            dos.writeUTF(nomClient);
-                                            break;
-                                        case 3:
-                                            System.out.print("Introdueix la mida maxima del fitxer per enviar/rebre: ");
-                                            String mida = sc.next();
-                                            dos.writeUTF(mida);
-                                            break;
-                                        case 4:
-                                            System.out.print("Introdueix la nova ip: ");
-                                            String ip = sc.next();
-                                            dos.writeUTF(ip);
-                                            break;
-                                        case 5:
-                                            System.out.print("Introdueix el nou port: ");
-                                            String port = sc.next();
-                                            dos.writeUTF(port);
-                                            break;
-                                        case 6:
-                                            break;
+                                        switch (Integer.parseInt(s1)) {
+                                            case 1:
+                                                System.out.println(dis.readUTF());
+                                                System.out.println(dis.readUTF());
+                                                System.out.println(dis.readUTF());
+                                                System.out.println(dis.readUTF());
+                                                break;
+                                            case 2:
+                                                System.out.print("Introdueix el nou nom del client: ");
+                                                String nomClient = sc.next();
+                                                dos.writeUTF(nomClient);
+                                                break;
+                                            case 3:
+                                                System.out.print("Introdueix la mida maxima del fitxer per enviar/rebre: ");
+                                                String mida = sc.next();
+                                                dos.writeUTF(mida);
+                                                break;
+                                            case 4:
+                                                System.out.print("Introdueix la nova ip: ");
+                                                String ip = sc.next();
+                                                dos.writeUTF(ip);
+                                                break;
+                                            case 5:
+                                                System.out.print("Introdueix el nou port: ");
+                                                String port = sc.next();
+                                                dos.writeUTF(port);
+                                                break;
+                                            case 6:
+                                                if (dis.readUTF().equals("true")) {
+                                                    sortirConfigcli = true;
+                                                }
+                                                break;
+                                        }
                                     }
                                     break;
 

@@ -288,7 +288,7 @@ public class Servidor { //ÉS EL SERVIDOR, ENCARA QUE REP ELS FITXERS
                                                             break;
                                                         case 6:
                                                             dos.writeUTF("true");
-                                                            sortirConfigServer = true;
+                                                            sortirConfigClient = true;
                                                             break;
 
                                                     }
